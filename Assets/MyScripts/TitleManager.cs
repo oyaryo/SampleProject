@@ -20,7 +20,6 @@ public class TitleManager : MonoBehaviour
     private void PlayFabLogin_OnLoginSuccess(LoginResult result)
     {
         Debug.Log("Login Success!");
-        Debug.Log(PlayerPrefs.GetString("PLAYFAB_CUSTOM_ID"));
     }
     private void OnDisable()
     {
