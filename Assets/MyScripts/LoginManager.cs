@@ -33,7 +33,6 @@ public class LoginManager : MonoBehaviour
     {
         messageText.text = "Logged in!";
         Debug.Log("Successful login/account create!");
-        PlayFabAuthService.Instance.SaveCustomId();
         SceneManager.LoadScene(1);
     }
 }

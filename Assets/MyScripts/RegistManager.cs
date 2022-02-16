@@ -30,7 +30,6 @@ public class RegistManager : MonoBehaviour
         }, result =>
         {
             messageText.text = "Registered and Logged in!";
-            PlayFabAuthService.Instance.SaveCustomId();
             SceneManager.LoadScene(1);
         }, error =>
         {
