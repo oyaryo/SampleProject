@@ -7,23 +7,6 @@ using System.Linq;
 
 public class PlayFabController : MonoBehaviour
 {
-    void Start()
-    {
-        // PlayFabAuthService.Instance.Authenticate(Authtypes.Silent);
-    //    PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest
-    //    {
-    //        TitleId = PlayFabSettings.TitleId,
-    //        CustomId = "100",
-    //        CreateAccount = true
-    //    }, result =>
-    //    {
-    //        Debug.Log("ログイン成功！");
-    //    }, error =>
-    //    {
-    //        Debug.Log(error.GenerateErrorReport());
-    //    });
-    }
-
     #region プレイヤーデータの更新・削除
     private void SetUserData()
     {

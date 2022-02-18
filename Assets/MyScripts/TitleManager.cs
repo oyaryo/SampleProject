@@ -9,6 +9,7 @@ public class TitleManager : MonoBehaviour
 {
     void Start()
     {
+        // 匿名ログイン
         PlayFabAuthService.Instance.Authenticate(Authtypes.Silent);
     }
     void OnEnable()
