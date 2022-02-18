@@ -20,7 +20,6 @@ public class TitleManager : MonoBehaviour
     private void PlayFabLogin_OnLoginSuccess(LoginResult result)
     {
         Debug.Log("Login Success!");
-        ShowCustomId();
     }
     private void OnDisable()
     {
@@ -31,16 +30,4 @@ public class TitleManager : MonoBehaviour
         SceneManager.LoadScene(n);
     }
 
-    void ShowCustomId(){
-        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest
-        {
-
-        },
-        result => {
-            Debug.Log(result.AccountInfo.CustomIdInfo.CustomId);
-        },
-        error => {
-            Debug.Log("error");
-        });
-    }
 }

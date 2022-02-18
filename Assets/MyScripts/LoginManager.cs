@@ -33,6 +33,24 @@ public class LoginManager : MonoBehaviour
     {
         messageText.text = "Logged in!";
         Debug.Log("Successful login/account create!");
+        
+        // ログインが成功したらPlayerPrefsのPLAYFAB_CUSTOM_IDを回復可能ログインのCustomIdへ書き換える
+        ChangeCustomId();
         SceneManager.LoadScene(1);
+    }
+
+    // CustomIdを取得するための関数
+    void ChangeCustomId(){
+        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest
+        {
+
+        },
+        result => {
+            PlayerPrefs.SetString("PLAYFAB_CUSTOM_ID", result.AccountInfo.CustomIdInfo.CustomId);
+            Debug.Log(result.AccountInfo.CustomIdInfo.CustomId);
+        },
+        error => {
+            Debug.Log("error");
+        });
     }
 }
