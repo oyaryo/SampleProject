@@ -8,23 +8,30 @@ using LoginResult = PlayFab.ClientModels.LoginResult;
 
 public class GameController : MonoBehaviour
 {
-    // 作品毎に異なるIDをプログラム内で共有する
     [SerializeField] string _pieceID;
     public string pieceID {get => _pieceID; set => _pieceID = value;}
     
+    void Start()
+    {
+        GetCurrentVirtualCurency();
+        CheckTicket();
+    }
+
     /// <summary>
     /// 現在の所持仮想通貨を表示するための処理
     /// </summary>
-
-    // 現在の所持金を表示するためのオブジェクトを格納する変数
-    public Text text_CurrentVC;
-    int VC;
-    public void GetCurrentVirtualCurency()
+    public Text text_CurrentVC;    
+    private string _VC;
+    string VC{
+        get{ return _VC; }
+        set{ 
+            _VC = value;
+            text_CurrentVC.text = "Current Virtual Curency: " + VC + " SC";
+        }
+    } 
+    void GetCurrentVirtualCurency()
     {
         GetUserInventry();
-        
-        // 画面に現在の所持金を表示するための命令文
-        text_CurrentVC.text = "Current Virtual Curency: " + VC + " SC";
     }
 
     void GetUserInventry()
@@ -35,20 +42,13 @@ public class GameController : MonoBehaviour
         },
         result =>
         {
-            foreach (var virtualCurrency in result.VirtualCurrency)
-            {
-                if(virtualCurrency.Key == "SC")
-                {
-                    VC = virtualCurrency.Value;
-                }
-            }
+            VC = result.VirtualCurrency[VC_SC].ToString();
         },
         error =>
         {
             Debug.Log(error.GenerateErrorReport());
         });
     }
-
 
     /// <summary>
     /// アイテム購入に使用する関数
@@ -60,7 +60,7 @@ public class GameController : MonoBehaviour
     const string TICKET_STORE_ID = "ticket_store";
     const string VC_SC = "SC";
 
-    public Text purchaseText;
+    public Text text_Purchase;
 
     public void GetCatalogData()
     {
@@ -111,26 +111,46 @@ public class GameController : MonoBehaviour
         result =>
         {
             //Debug.Log($"{result.Items[0].DisplayName}:購入成功");
-            purchaseText.text = "購入完了。ありがとうございました！";
+            text_Purchase.text = "購入完了。ありがとうございました！";
+            ticketFlag = true;
+            GetCurrentVirtualCurency();
         },
         error =>
         {
             if (error.Error == PlayFabErrorCode.InsufficientFunds)
             {
-                purchaseText.text = "あらお金が足りないわね。";
+                text_Purchase.text = "あらお金が足りないわね。";
+                return;
             }
             Debug.Log(error.GenerateErrorReport());
         });
     }
 
-    void ChangeText(string text)
+    // チケットを所持しているかどうかをチェックする
+    public bool ticketFlag {get; set;}
+    public List<ItemInstance> UserInventry { get; private set; }
+    public void CheckTicket()
     {
-        Text txt = GetComponentInChildren<Text>();
-        txt.text = text;
-    }
-
-    void Start()
-    {
-        GetCurrentVirtualCurency();
+        PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest
+        {
+            
+        },
+        result =>
+        {
+            UserInventry = result.Inventory;
+            foreach (var item in UserInventry)
+            {
+                if (item.ItemId == "ticket-A")
+                {
+                    ticketFlag = true;
+                }
+            }
+            //var consumeItem = UserInventry.Find(x => x.ItemId == "apple");
+            //ConsumeItem(consumeItem.ItemInstanceId);
+        },
+        error =>
+        {
+            Debug.Log(error.GenerateErrorReport());
+        });
     }
 }
