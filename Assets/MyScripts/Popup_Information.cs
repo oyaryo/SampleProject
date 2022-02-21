@@ -23,12 +23,10 @@ public class Popup_Information : MonoBehaviour
 
     void Lock_On(){
         Time.timeScale = 1.0f; 
-        CursorManager.Cursor_Lock_On();
-        Debug.Log(CursorManager.cursorLock);
+        // CursorManager.Cursor_Lock_On();
     }
     void Lock_Off(){
         Time.timeScale = 0f;
-        CursorManager.Cursor_Lock_Off();
-        Debug.Log(CursorManager.cursorLock);
+        // CursorManager.Cursor_Lock_Off();
     }
 }
