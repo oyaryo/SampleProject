@@ -22,59 +22,59 @@ AssetImportWorker0
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-55969
+63485
 Successfully changed project path to: /Users/oyaryo/UnityGithub/SampleProject
 /Users/oyaryo/UnityGithub/SampleProject
 Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 213.60 ms, found 2 plugins.
+Refreshing native plugins compatible for Editor in 207.47 ms, found 2 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2020.3.28f1 (f5400f52e03f)
 [Subsystems] Discovering subsystems at path /Users/oyaryo/Documents/Unity/2020.3.28f1/Unity.app/Contents/Resources/UnitySubsystems
 [Subsystems] Discovering subsystems at path /Users/oyaryo/UnityGithub/SampleProject/Assets
 GfxDevice: creating device client; threaded=0
-2022-02-20 23:56:25.912 Unity[15948:962075] Color LCD preferred device: Intel(R) UHD Graphics 630 (low power)
-2022-02-20 23:56:25.912 Unity[15948:962075] Metal devices available: 2
-2022-02-20 23:56:25.912 Unity[15948:962075] 0: AMD Radeon Pro Vega 20 (high power)
-2022-02-20 23:56:25.912 Unity[15948:962075] 1: Intel(R) UHD Graphics 630 (low power)
-2022-02-20 23:56:25.912 Unity[15948:962075] Using device AMD Radeon Pro Vega 20 (high power)
+2022-03-04 20:48:01.362 Unity[42667:4749398] Color LCD preferred device: Intel(R) UHD Graphics 630 (low power)
+2022-03-04 20:48:01.362 Unity[42667:4749398] Metal devices available: 2
+2022-03-04 20:48:01.362 Unity[42667:4749398] 0: AMD Radeon Pro Vega 20 (high power)
+2022-03-04 20:48:01.362 Unity[42667:4749398] 1: Intel(R) UHD Graphics 630 (low power)
+2022-03-04 20:48:01.363 Unity[42667:4749398] Using device AMD Radeon Pro Vega 20 (high power)
 Initializing Metal device caps: AMD Radeon Pro Vega 20
 Initialize mono
 Mono path[0] = '/Users/oyaryo/Documents/Unity/2020.3.28f1/Unity.app/Contents/Managed'
 Mono path[1] = '/Users/oyaryo/Documents/Unity/2020.3.28f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityjit'
 Mono config path = '/Users/oyaryo/Documents/Unity/2020.3.28f1/Unity.app/Contents/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56948
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56667
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: /Users/oyaryo/Documents/Unity/2020.3.28f1/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
 Register platform support module: /Users/oyaryo/Documents/Unity/2020.3.28f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
-Registered in 0.000605 seconds.
+Registered in 0.000603 seconds.
 Native extension for OSXStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 214.06 ms, found 2 plugins.
+Refreshing native plugins compatible for Editor in 207.18 ms, found 2 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  0.779 seconds
+- Completed reload, in  0.746 seconds
 Domain Reload Profiling:
-	ReloadAssembly (779ms)
-		BeginReloadAssembly (48ms)
+	ReloadAssembly (746ms)
+		BeginReloadAssembly (47ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (0ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
 			CreateAndSetChildDomain (1ms)
-		EndReloadAssembly (658ms)
-			LoadAssemblies (47ms)
+		EndReloadAssembly (630ms)
+			LoadAssemblies (46ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (183ms)
+			SetupTypeCache (168ms)
 			ReleaseScriptCaches (0ms)
-			RebuildScriptCaches (37ms)
-			SetupLoadedEditorAssemblies (355ms)
+			RebuildScriptCaches (36ms)
+			SetupLoadedEditorAssemblies (343ms)
 				LogAssemblyErrors (0ms)
 				InitializePlatformSupportModulesInManaged (5ms)
 				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (214ms)
-				BeforeProcessingInitializeOnLoad (12ms)
-				ProcessInitializeOnLoadAttributes (94ms)
+				RefreshPlugins (207ms)
+				BeforeProcessingInitializeOnLoad (11ms)
+				ProcessInitializeOnLoadAttributes (89ms)
 				ProcessInitializeOnLoadMethodAttributes (30ms)
 				AfterProcessingInitializeOnLoad (0ms)
 				EditorAssembliesLoaded (0ms)
@@ -82,44 +82,44 @@ Domain Reload Profiling:
 			AwakeInstancesAfterBackupRestoration (0ms)
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.003551 seconds.
+Registered in 0.004860 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for OSXStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 193.99 ms, found 2 plugins.
+Refreshing native plugins compatible for Editor in 177.21 ms, found 2 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  2.190 seconds
+- Completed reload, in  2.108 seconds
 Domain Reload Profiling:
-	ReloadAssembly (2191ms)
-		BeginReloadAssembly (169ms)
+	ReloadAssembly (2109ms)
+		BeginReloadAssembly (148ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (5ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
-			CreateAndSetChildDomain (30ms)
-		EndReloadAssembly (1961ms)
-			LoadAssemblies (85ms)
+			CreateAndSetChildDomain (29ms)
+		EndReloadAssembly (1900ms)
+			LoadAssemblies (81ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (437ms)
+			SetupTypeCache (415ms)
 			ReleaseScriptCaches (1ms)
-			RebuildScriptCaches (91ms)
-			SetupLoadedEditorAssemblies (1221ms)
+			RebuildScriptCaches (75ms)
+			SetupLoadedEditorAssemblies (1212ms)
 				LogAssemblyErrors (0ms)
 				InitializePlatformSupportModulesInManaged (4ms)
 				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (194ms)
-				BeforeProcessingInitializeOnLoad (99ms)
-				ProcessInitializeOnLoadAttributes (913ms)
+				RefreshPlugins (177ms)
+				BeforeProcessingInitializeOnLoad (91ms)
+				ProcessInitializeOnLoadAttributes (930ms)
 				ProcessInitializeOnLoadMethodAttributes (9ms)
 				AfterProcessingInitializeOnLoad (1ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (6ms)
 Platform modules already initialized, skipping
-Validating Project structure ... 0.117189 seconds.
+Validating Project structure ... 0.118774 seconds.
 Shader import version has changed; will reimport all shaders...
-Upgrading shader files ...0.140626 seconds.
+Upgrading shader files ...0.234090 seconds.
 Application.AssetDatabase Initial Script Refresh Start
 RefreshInfo: InitialScriptRefreshV2(NoUpdateAssetOptions) scanfilter:  ... 1 filters
 RefreshProfiler: Total: 0.000ms
@@ -129,18 +129,18 @@ Application.AssetDatabase.Refresh End
 RefreshInfo: StopAssetImportingV2(ForceSynchronousImport) scanfilter: 
 RefreshProfiler: Total: 0.000ms
 Launching external process: /Users/oyaryo/Documents/Unity/2020.3.28f1/Unity.app/Contents/Tools/UnityShaderCompiler
-Launched and connected shader compiler UnityShaderCompiler after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler after 0.02 seconds
 Initializing Unity extensions:
 ========================================================================
 Worker process is ready to serve import requests
-Refreshing native plugins compatible for Editor in 2.06 ms, found 2 plugins.
+Refreshing native plugins compatible for Editor in 2.03 ms, found 2 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 4433 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 349.5 MB.
-System memory in use after: 349.3 MB.
+Unloading 4568 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 391.8 MB.
+System memory in use after: 378.3 MB.
 
-Unloading 225 unused Assets to reduce memory usage. Loaded Objects now: 4913.
-Total: 4.195250 ms (FindLiveObjects: 0.298217 ms CreateObjectMapping: 0.213140 ms MarkObjects: 3.391501 ms  DeleteObjects: 0.291695 ms)
+Unloading 316 unused Assets to reduce memory usage. Loaded Objects now: 4971.
+Total: 14.666244 ms (FindLiveObjects: 0.376196 ms CreateObjectMapping: 0.279476 ms MarkObjects: 3.265503 ms  DeleteObjects: 10.744434 ms)
 
 AssetImportParameters requested are different than current active one (requested -> active):
   custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
@@ -154,160 +154,201 @@ AssetImportParameters requested are different than current active one (requested
   custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
 ========================================================================
 Received Import Request.
-  path: Assets/Scenes/SampleScene.unity
-  artifactKey: Guid(981f4424b93064a0d9bb04638431fa78) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scenes/SampleScene.unity using Guid(981f4424b93064a0d9bb04638431fa78) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'de9b73383fe4fc3e3a94a0e4ac0b28bb') in 0.015509 seconds 
-  Import took 0.024851 seconds .
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/eyeline.mat
+  artifactKey: Guid(407f97b032a277c44b753ed1c256a3b8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/eyeline.mat using Guid(407f97b032a277c44b753ed1c256a3b8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '464bd21a52a3196570cdf37febf3e3d1') in 1.350052 seconds 
+  Import took 1.361587 seconds .
 
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.003833 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for OSXStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 2.04 ms, found 2 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Mono: successfully reloaded assembly
-- Completed reload, in  2.047 seconds
-Domain Reload Profiling:
-	ReloadAssembly (2047ms)
-		BeginReloadAssembly (149ms)
-			ExecutionOrderSort (0ms)
-			DisableScriptedObjects (4ms)
-			BackupInstance (0ms)
-			ReleaseScriptingObjects (0ms)
-			CreateAndSetChildDomain (76ms)
-		EndReloadAssembly (1836ms)
-			LoadAssemblies (76ms)
-			RebuildTransferFunctionScriptingTraits (1ms)
-			SetupTypeCache (459ms)
-			ReleaseScriptCaches (2ms)
-			RebuildScriptCaches (73ms)
-			SetupLoadedEditorAssemblies (1032ms)
-				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (4ms)
-				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (2ms)
-				BeforeProcessingInitializeOnLoad (149ms)
-				ProcessInitializeOnLoadAttributes (867ms)
-				ProcessInitializeOnLoadMethodAttributes (8ms)
-				AfterProcessingInitializeOnLoad (1ms)
-				EditorAssembliesLoaded (0ms)
-			ExecutionOrderSort2 (0ms)
-			AwakeInstancesAfterBackupRestoration (11ms)
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 2.00 ms, found 2 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 4278 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 340.1 MB.
-System memory in use after: 340.3 MB.
-
-Unloading 21 unused Assets to reduce memory usage. Loaded Objects now: 4917.
-Total: 3.788724 ms (FindLiveObjects: 0.287505 ms CreateObjectMapping: 0.201738 ms MarkObjects: 3.226162 ms  DeleteObjects: 0.072644 ms)
-
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
-  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
-  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
-  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
-  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
-  custom:framework-osx-AVFoundation: e770b220cccbd017edd2c1fefb359320 -> 
-  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
-  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
 ========================================================================
 Received Import Request.
-  Time since last request: 521.690237 seconds.
-  path: Assets/Scenes/SampleScene.unity
-  artifactKey: Guid(981f4424b93064a0d9bb04638431fa78) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scenes/SampleScene.unity using Guid(981f4424b93064a0d9bb04638431fa78) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd2dd71f2c0f05539f4660d7367732035') in 0.017126 seconds 
-  Import took 0.028901 seconds .
+  Time since last request: 0.000312 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/Left.mat
+  artifactKey: Guid(00cf17fb11d4e76448c2096f7ee6aa4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/Left.mat using Guid(00cf17fb11d4e76448c2096f7ee6aa4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cf9e87fe4bd271911eaff8d76dc09d14') in 0.011681 seconds 
+  Import took 0.025949 seconds .
 
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.006244 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for OSXStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 1.95 ms, found 2 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Mono: successfully reloaded assembly
-- Completed reload, in  2.051 seconds
-Domain Reload Profiling:
-	ReloadAssembly (2051ms)
-		BeginReloadAssembly (151ms)
-			ExecutionOrderSort (0ms)
-			DisableScriptedObjects (4ms)
-			BackupInstance (0ms)
-			ReleaseScriptingObjects (0ms)
-			CreateAndSetChildDomain (78ms)
-		EndReloadAssembly (1839ms)
-			LoadAssemblies (87ms)
-			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (456ms)
-			ReleaseScriptCaches (2ms)
-			RebuildScriptCaches (62ms)
-			SetupLoadedEditorAssemblies (1051ms)
-				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (4ms)
-				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (2ms)
-				BeforeProcessingInitializeOnLoad (156ms)
-				ProcessInitializeOnLoadAttributes (880ms)
-				ProcessInitializeOnLoadMethodAttributes (8ms)
-				AfterProcessingInitializeOnLoad (1ms)
-				EditorAssembliesLoaded (0ms)
-			ExecutionOrderSort2 (0ms)
-			AwakeInstancesAfterBackupRestoration (11ms)
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 2.33 ms, found 2 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 4278 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 342.2 MB.
-System memory in use after: 342.4 MB.
-
-Unloading 20 unused Assets to reduce memory usage. Loaded Objects now: 4920.
-Total: 4.036169 ms (FindLiveObjects: 0.292309 ms CreateObjectMapping: 0.208913 ms MarkObjects: 3.454706 ms  DeleteObjects: 0.079545 ms)
-
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
-  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
-  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
-  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
-  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
-  custom:framework-osx-AVFoundation: e770b220cccbd017edd2c1fefb359320 -> 
-  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
-  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-========================================================================
-Received Prepare
-Refreshing native plugins compatible for Editor in 4.95 ms, found 2 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 16 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 257.7 MB.
-System memory in use after: 257.9 MB.
-
-Unloading 16 unused Assets to reduce memory usage. Loaded Objects now: 4920.
-Total: 4.495038 ms (FindLiveObjects: 0.343859 ms CreateObjectMapping: 0.218332 ms MarkObjects: 3.848107 ms  DeleteObjects: 0.084097 ms)
-
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
-  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
-  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
-  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
-  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
-  custom:framework-osx-AVFoundation: e770b220cccbd017edd2c1fefb359320 -> 
-  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
-  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
 ========================================================================
 Received Import Request.
-  Time since last request: 2557.966717 seconds.
-  path: Assets/Scenes/SampleScene.unity
-  artifactKey: Guid(981f4424b93064a0d9bb04638431fa78) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scenes/SampleScene.unity using Guid(981f4424b93064a0d9bb04638431fa78) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c5b13f061eddb6ce921fd66f075fbed8') in 0.017181 seconds 
-  Import took 0.032775 seconds .
+  Time since last request: 0.000200 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art
+  artifactKey: Guid(defce7c728fb01d49a7a7e9205dbde77) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art using Guid(defce7c728fb01d49a7a7e9205dbde77) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4aca67682a69ff282d45018f8ab601fd') in 0.000904 seconds 
+  Import took 0.009660 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000229 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/face.mat
+  artifactKey: Guid(4d83bd267b90e934e88637afcd02cb8a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/face.mat using Guid(4d83bd267b90e934e88637afcd02cb8a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fad348578c9428ac0fc5f1fc377f2b71') in 0.037228 seconds 
+  Import took 0.048854 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000271 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/eyebase.mat
+  artifactKey: Guid(9bec51fc47eda6047ba5cc01addbf46f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/eyebase.mat using Guid(9bec51fc47eda6047ba5cc01addbf46f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f569d9a922c8b38da1ad8d9c178a5b7c') in 0.012038 seconds 
+  Import took 0.028176 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000310 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/Right.mat
+  artifactKey: Guid(88157e674d7d0314db76940c73b69405) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/Right.mat using Guid(88157e674d7d0314db76940c73b69405) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fc4dee67c64847d59baa525d94a9a394') in 0.028230 seconds 
+  Import took 0.040118 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000221 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/mat_cheek.mat
+  artifactKey: Guid(5f9d44654b83160428d7c4cf276b3572) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/mat_cheek.mat using Guid(5f9d44654b83160428d7c4cf276b3572) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '331aa4474b44629ad50f746181133f56') in 0.012716 seconds 
+  Import took 0.021465 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000286 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/eye_R1.mat
+  artifactKey: Guid(a87def7cf3654cc43add52e645fee2ce) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/eye_R1.mat using Guid(a87def7cf3654cc43add52e645fee2ce) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5fd5a12c6ffa5f86f7886c310221a2f7') in 0.012588 seconds 
+  Import took 0.030084 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000348 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/hair.mat
+  artifactKey: Guid(5ebb6caef8207d243a588a574971408c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/hair.mat using Guid(5ebb6caef8207d243a588a574971408c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1e3dfc9afe9c26c7440a1a3917dc5137') in 0.099050 seconds 
+  Import took 0.108523 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000258 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/eye_L1.mat
+  artifactKey: Guid(4987862c1c195e74c86994ba4bcbd812) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/eye_L1.mat using Guid(4987862c1c195e74c86994ba4bcbd812) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1fbc044d086d23c99e70022b48d90174') in 0.011365 seconds 
+  Import took 0.035624 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000247 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/skin1.mat
+  artifactKey: Guid(ca131910d5c9a634dbdd38e77111033f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/skin1.mat using Guid(ca131910d5c9a634dbdd38e77111033f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b824a026fa269450684e11a3ad378ad0') in 0.036177 seconds 
+  Import took 0.045672 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000263 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials/body.mat
+  artifactKey: Guid(bb570020a8c3bad4bbf803af20e78937) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials/body.mat using Guid(bb570020a8c3bad4bbf803af20e78937) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '178b7ae425151704b3b2ab0c3ae33f2a') in 0.035351 seconds 
+  Import took 0.056247 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000426 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/Materials
+  artifactKey: Guid(711fff8ed805d4669bb1be75a0fed3d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/Materials using Guid(711fff8ed805d4669bb1be75a0fed3d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '566073fc6ab72b3c63d3b248744f5ce9') in 0.001195 seconds 
+  Import took 0.014704 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 24.192275 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Texture/face_00.tga
+  artifactKey: Guid(3cf2e516b5353d5499c41818747b4155) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Texture/face_00.tga using Guid(3cf2e516b5353d5499c41818747b4155) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ffc969d8d0410a3317e55a86ae252855') in 1.086539 seconds 
+  Import took 1.098453 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 137.772604 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Texture
+  artifactKey: Guid(5d48b74ab15384cb4890c8670fa6b180) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Texture using Guid(5d48b74ab15384cb4890c8670fa6b180) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '954d5f10f92eab3b85d9556a2d18c437') in 0.001099 seconds 
+  Import took 0.010415 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.032734 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials
+  artifactKey: Guid(d37ce0e735ec24e67a1d51ad25057fa2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials using Guid(d37ce0e735ec24e67a1d51ad25057fa2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '29c9d1cf8ae046122dff4826e16af8b1') in 0.001250 seconds 
+  Import took 0.011914 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.096941 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/body.mat
+  artifactKey: Guid(3b399c72488294c53b66f39632a8fe8b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/body.mat using Guid(3b399c72488294c53b66f39632a8fe8b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '071e4de4dcd9dbba2e11fcefe02c68b0') in 0.024259 seconds 
+  Import took 0.034145 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000285 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/eyeline.mat
+  artifactKey: Guid(7bac98231102243919a4534a06cc74ba) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/eyeline.mat using Guid(7bac98231102243919a4534a06cc74ba) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3cd121aa95b90d9fcba5ea7a1f54e1d8') in 0.038830 seconds 
+  Import took 0.047441 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000279 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/eyebase.mat
+  artifactKey: Guid(c7d8484a18b294b4ea192d6a82f2e0d5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/eyebase.mat using Guid(c7d8484a18b294b4ea192d6a82f2e0d5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '92c7b8b85b4d18c677ff9e3209259bce') in 0.013348 seconds 
+  Import took 0.022993 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000285 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/mat_cheek.mat
+  artifactKey: Guid(4efe8cdcc7b554591bde513d7bde06d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/mat_cheek.mat using Guid(4efe8cdcc7b554591bde513d7bde06d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9b5669647e137189c0ba431e66b24c48') in 0.024771 seconds 
+  Import took 0.038839 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000249 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/eye_L1.mat
+  artifactKey: Guid(a0186681a218f4550a84e6f0488e8b61) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/eye_L1.mat using Guid(a0186681a218f4550a84e6f0488e8b61) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f3584200f2ac484e6df05e974b06d914') in 0.039904 seconds 
+  Import took 0.051393 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000269 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/face.mat
+  artifactKey: Guid(cb35fb92776d24a65827b1d3ab18fe60) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/face.mat using Guid(cb35fb92776d24a65827b1d3ab18fe60) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3fd7ee368b79334036811cd461e87137') in 0.032274 seconds 
+  Import took 0.044628 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000333 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/eye_R1.mat
+  artifactKey: Guid(f37e71293707f43b9b83c1925ad01bd7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/eye_R1.mat using Guid(f37e71293707f43b9b83c1925ad01bd7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ec059af9a776c36e8d2924d6468b8b6e') in 0.016273 seconds 
+  Import took 0.027352 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000304 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/skin1.mat
+  artifactKey: Guid(4b91d906c72fd4447bfabbdd767e31ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/skin1.mat using Guid(4b91d906c72fd4447bfabbdd767e31ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '520401482ce4a371b6a8b04dcf6eb3cf') in 0.039658 seconds 
+  Import took 0.051424 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000333 seconds.
+  path: Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/hair.mat
+  artifactKey: Guid(0686b679809f14929a8d7f427cbb4da3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/unity-chan!/Unity-chan! Model/Art/UnityChanShader/Materials/hair.mat using Guid(0686b679809f14929a8d7f427cbb4da3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4fc99e06f8ae3082d24a8be0faa21c45') in 0.020433 seconds 
+  Import took 0.037246 seconds .
 
 AssetImportWorkerClient::OnTransportError - code=2 error=End of file

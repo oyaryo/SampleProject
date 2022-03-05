@@ -7,18 +7,21 @@ using UnityEngine.UI;
 
 public class Popup_Video: MonoBehaviour
 {
+    public GameController gameManager;
     public RawImage rawImage;
     Animator animator;
 
-    // Start is called before the first frame update
     void Start()
     {
+        // SetVideoClip(gameManager.pieceID);
         this.animator = GetComponent<Animator>();
     }
-
-    public void Popup_Open(string pieceID){
+    
+    public void Popup_Open(){
+        Lock_Off();
+        Debug.Log("timeScale: " + Time.timeScale);
+        Debug.Log(animator);
         animator.SetTrigger("open");
-        SetVideoClip(pieceID);
     }
 
     public void Popup_Close(){
@@ -26,10 +29,11 @@ public class Popup_Video: MonoBehaviour
     }
 
     void Lock_On(){
-        Time.timeScale = 1.0f; 
+        if(Time.timeScale == 0f){
+            Time.timeScale = 1.0f; 
+        }
         // CursorManager.Cursor_Lock_On();
     }
-
     void Lock_Off(){
         Time.timeScale = 0f;
         // CursorManager.Cursor_Lock_Off();

@@ -13,39 +13,46 @@ public class RegistManager : MonoBehaviour
     public InputField userNameInput;
     public InputField emailInput;
     public InputField passwordInput;
+    public Toggle toggle;
+
+    public Popup_Information popup_Information;
 
     public void RegisterButton()
     {
-        if(passwordInput.text.Length < 6)
-        {
-            messageText.text = "Password too short!";
+        if(toggle.isOn){
+            if(passwordInput.text.Length < 6)
+            {
+                messageText.text = "Password too short!";
+                return;
+            }
+
+            PlayFabClientAPI.AddUsernamePassword(new AddUsernamePasswordRequest
+            {
+                Username = userNameInput.text,
+                Email = emailInput.text,
+                Password = passwordInput.text
+            }, result =>
+            {
+                messageText.text = "Registered and Logged in!";
+                SceneManager.LoadScene(1);
+            }, error =>
+            {
+                Debug.LogError(error.GenerateErrorReport());
+                messageText.text = "error!";
+
+                switch (error.Error)
+                {
+                    case PlayFabErrorCode.InvalidEmailOrPassword:
+                        break;
+
+                    default:
+                        messageText.text = "原因不明のエラーが発生しました。\n恐れ入りますが運営にお問い合わせください。";
+                        break;
+                }
+            });
             return;
         }
-
-        PlayFabClientAPI.AddUsernamePassword(new AddUsernamePasswordRequest
-        {
-            Username = userNameInput.text,
-            Email = emailInput.text,
-            Password = passwordInput.text
-        }, result =>
-        {
-            messageText.text = "Registered and Logged in!";
-            SceneManager.LoadScene(1);
-        }, error =>
-        {
-            Debug.LogError(error.GenerateErrorReport());
-            messageText.text = "error!";
-
-            switch (error.Error)
-            {
-                case PlayFabErrorCode.InvalidEmailOrPassword:
-                    break;
-
-                default:
-                    messageText.text = "原因不明のエラーが発生しました。\n恐れ入りますが運営にお問い合わせください。";
-                    break;
-            }
-        });
+        popup_Information.Popup_Open();
     }
 
     //void OnRegisterSuccess(RegisterPlayFabUserResult result)
