@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DevAccountEmail: masumasuhogaraka@conditionyellow.net
   DevAccountToken: z3dp556d5zsprfbod47xbkc6kps3s37tmowmnk1ycs3nm3mucsh44kpat6kzp8omg4qpn8ro6yoyb7iyhs8owwwpmowu5rywcx7pq6uzu7gce6xxoe4ntkwj6cuyzs1n4rrtz1jo7otazpo8stq6pf55tzkocsjbnenq99dpi9rpcwpyy6k81huqs8m6x49eam9mk3r1
-  SelectedStudio: 
+  SelectedStudio: studioSkyfall
   SdkPath: Assets/PlayFabSDK
   EdExPath: 
   LocalCloudScriptPath: 
   PanelIsShown: 0
-  curMainMenuIdx: 2
+  curMainMenuIdx: 0
   curSubMenuIdx: 0

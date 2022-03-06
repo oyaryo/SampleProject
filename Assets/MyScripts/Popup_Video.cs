@@ -18,14 +18,16 @@ public class Popup_Video: MonoBehaviour
     }
     
     public void Popup_Open(){
-        Lock_Off();
-        Debug.Log("timeScale: " + Time.timeScale);
-        Debug.Log(animator);
         animator.SetTrigger("open");
     }
 
     public void Popup_Close(){
         animator.SetTrigger("close");
+
+        VideoPlayer videoPlayer = rawImage.GetComponent<VideoPlayer>();
+        if(videoPlayer.isPlaying){
+            videoPlayer.Stop();
+        }
     }
 
     void Lock_On(){

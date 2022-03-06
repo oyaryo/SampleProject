@@ -15,7 +15,7 @@ MonoBehaviour:
   TitleId: 38884
   DeveloperSecretKey: 8NOJITQYE1TX3MBN4XO6RCEWZGUKB1ZZX5BWTURODRDOOMOUQM
   ProductionEnvironmentUrl: 
-  RequestType: 0
+  RequestType: 2
   DisableDeviceInfo: 0
   DisableFocusTimeCollection: 0
   RequestTimeout: 2000

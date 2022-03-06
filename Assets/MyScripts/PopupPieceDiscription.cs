@@ -47,6 +47,12 @@ public class PopupPieceDiscription : MonoBehaviour
         // 詳細画面を閉じた後コントローラーパネルを表示する
         controllerPanel.SetActive(true);
     }
+    public void Popup_Close_for_Video(){
+        animator.SetTrigger("close");
+        if(audioSource.isPlaying){
+            audioSource.Stop();
+        }
+    }
 
     void Lock_On(){
         Time.timeScale = 1.0f; 
