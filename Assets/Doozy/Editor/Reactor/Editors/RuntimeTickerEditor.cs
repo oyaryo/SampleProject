@@ -7,6 +7,7 @@ using System.Linq;
 using Doozy.Editor.EditorUI;
 using Doozy.Editor.EditorUI.Components;
 using Doozy.Editor.EditorUI.ScriptableObjects.Colors;
+using Doozy.Editor.EditorUI.Utils;
 using Doozy.Runtime.Reactor.Ticker;
 using Doozy.Runtime.UIElements.Extensions;
 using UnityEditor;
@@ -24,7 +25,7 @@ namespace Doozy.Editor.Reactor.Editors
         public static Color accentColor => EditorColors.Reactor.Red;
         public static EditorSelectableColorInfo selectableAccentColor => EditorSelectableColors.Reactor.Red;
         
-        public static IEnumerable<Texture2D> heartbeatIconTextures => EditorMicroAnimations.Reactor.Icons.Heartbeat;
+        public static IEnumerable<Texture2D> heartbeatIconTextures => EditorSpriteSheets.Reactor.Icons.Heartbeat;
         
         private VisualElement root { get; set; }
         private FluidComponentHeader componentHeader { get; set; }
@@ -43,14 +44,15 @@ namespace Doozy.Editor.Reactor.Editors
 
         private void CreateEditor()
         {
-            root = new VisualElement();
+            root = DesignUtils.GetEditorRoot();
 
             componentHeader = FluidComponentHeader.Get()
                 .SetAccentColor(accentColor)
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(RuntimeTicker)))
                 .SetIcon(heartbeatIconTextures.ToList())
                 .SetElementSize(ElementSize.Large)
-                .AddManualButton("www.bit.ly/DoozyKnowledgeBase4")
+                .AddManualButton()
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.Reactor.Ticker.RuntimeTicker.html")
                 .AddYouTubeButton();
         }
 

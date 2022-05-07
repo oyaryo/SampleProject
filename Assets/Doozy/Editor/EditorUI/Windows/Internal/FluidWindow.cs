@@ -2,6 +2,7 @@
 // This code can only be used under the standard Unity Asset Store End User License Agreement
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
+using Doozy.Editor.UIElements;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,10 +13,13 @@ namespace Doozy.Editor.EditorUI.Windows.Internal
     {
         protected string EditorPrefsKey(string variableName) => $"{GetType().FullName} - {variableName}";
 
+        protected PlayModeStateChange currentPlayModeState { get; private set; } = PlayModeStateChange.EnteredEditMode;
+
         protected VisualElement root => rootVisualElement;
         protected VisualElement windowLayout { get; set; }
 
-        public static bool isOpen { get; private set; }
+        // public static bool isOpen { get; private set; }
+        public static bool isOpen => HasOpenInstances<T>();
 
         #region Instance
 
@@ -54,19 +58,45 @@ namespace Doozy.Editor.EditorUI.Windows.Internal
             instance.titleContent.text = windowTitle;
         }
 
+        protected virtual void Awake() {}
+
         protected virtual void OnEnable()
         {
-            isOpen = true;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
         protected virtual void OnDisable()
         {
-            isOpen = false;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         }
 
         protected virtual void OnDestroy() {}
 
-        protected abstract void CreateGUI();
+        protected virtual void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            // Debugger.Log($"(FluidWindow).{nameof(OnPlayModeStateChanged)}({state})");
 
+            currentPlayModeState = state;
+            switch (state)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                case PlayModeStateChange.EnteredPlayMode:
+                {
+                    OnDestroy();
+                    root.RecycleAndClear();
+                    CreateGUI();
+                    break;
+                }
+                case PlayModeStateChange.ExitingEditMode:
+                case PlayModeStateChange.ExitingPlayMode:
+                {
+                    //ignored
+                    break;
+                }
+            }
+        }
+
+        protected abstract void CreateGUI();
     }
 }

@@ -52,7 +52,7 @@ namespace Doozy.Editor.Nody
 
         public virtual Type nodeType => null;
         public virtual Texture2D nodeIconTexture => EditorTextures.Nody.Icons.Infinity;
-        public virtual IEnumerable<Texture2D> nodeIconTextures => EditorMicroAnimations.Nody.Icons.Nody;
+        public virtual IEnumerable<Texture2D> nodeIconTextures => EditorSpriteSheets.Nody.Icons.Nody;
         public virtual Color nodeAccentColor => EditorColors.Nody.Color;
         public virtual EditorSelectableColorInfo nodeSelectableAccentColor => EditorSelectableColors.Nody.Color;
 
@@ -67,7 +67,10 @@ namespace Doozy.Editor.Nody
         protected FluidButton addOutputButton { get; set; }
 
         private static string s_uxmlPath;
-        private static string uxmlPath => !s_uxmlPath.IsNullOrEmpty() ? s_uxmlPath : (s_uxmlPath = AssetDatabase.GetAssetPath(EditorLayouts.Nody.NodeView));
+        private static string uxmlPath =>
+            !s_uxmlPath.IsNullOrEmpty()
+                ? s_uxmlPath
+                : s_uxmlPath = AssetDatabase.GetAssetPath(EditorLayouts.Nody.NodeView);
 
         public ColorReaction activeStateBorderReaction { get; internal set; }
         public ColorReaction pingBorderReaction { get; internal set; }
@@ -181,8 +184,6 @@ namespace Doozy.Editor.Nody
             pingBorderReaction.SetTo(Color.clear);
             if (direction == FlowDirection.Back)
                 pingBorderReaction.Play();
-
-
         }
 
         public void Ping(Color color)
@@ -198,6 +199,8 @@ namespace Doozy.Editor.Nody
         /// <summary> Refresh the node (call when node's data changes) </summary>
         public virtual void RefreshNodeView()
         {
+            serializedObject.UpdateIfRequiredOrScript();
+
             viewDataKey = flowNode.nodeId;
             title = flowNode.name;
 
@@ -241,7 +244,6 @@ namespace Doozy.Editor.Nody
 
         }
 
-
         /// <summary> Called every time the node state changes its state </summary>
         /// <param name="newState"> New node state </param>
         protected virtual void OnNodeStateChanged(NodeState newState) =>
@@ -255,7 +257,7 @@ namespace Doozy.Editor.Nody
             {
                 case NodeState.Idle:
                     runningStateIconIndicatorReaction.SetFirstFrame();
-                    
+
                     activeStateBorderReaction.SetProgressAtOne();
                     activeStateBorderReaction.Play(PlayDirection.Reverse);
                     activeStateLineIndicatorReaction.SetFirstFrame();
@@ -269,7 +271,7 @@ namespace Doozy.Editor.Nody
                         activeStateBorderReaction.Play(PlayDirection.Reverse);
                         activeStateLineIndicatorReaction.SetFirstFrame();
                     }
-                    
+
                     break;
                 case NodeState.Active:
                     activeStateBorderReaction.Play(PlayDirection.Forward);
@@ -353,7 +355,7 @@ namespace Doozy.Editor.Nody
                     deleteLockIcon
                         .GetTexture2DReaction()
                         .SetEditorHeartbeat()
-                        .SetTextures(EditorMicroAnimations.EditorUI.Icons.Locked);
+                        .SetTextures(EditorSpriteSheets.EditorUI.Icons.Locked);
 
                 deleteLockIcon.RegisterCallback<PointerEnterEvent>(evy => deleteLockIconReaction?.Play());
 
@@ -376,7 +378,7 @@ namespace Doozy.Editor.Nody
             runningStateIconIndicatorReaction =
                 runningStateIconIndicator.GetTexture2DReaction().SetEditorHeartbeat()
                     .SetLoops(-1).SetDuration(1f)
-                    .SetTextures(EditorMicroAnimations.Nody.Effects.NodeStateRunning);
+                    .SetTextures(EditorSpriteSheets.Nody.Effects.NodeStateRunning);
 
             nodeIcon.AddChild(runningStateIconIndicator);
 
@@ -392,7 +394,7 @@ namespace Doozy.Editor.Nody
                 activeStateLineIndicator.GetTexture2DReaction().SetEditorHeartbeat()
                     .SetLoops(-1)
                     .SetDuration(1f)
-                    .SetTextures(EditorMicroAnimations.Nody.Effects.NodeStateActive);
+                    .SetTextures(EditorSpriteSheets.Nody.Effects.NodeStateActive);
 
             nodeContent.Insert(0, activeStateLineIndicator);
 
@@ -432,23 +434,23 @@ namespace Doozy.Editor.Nody
             addOutputButton?.Recycle();
 
             addOutputButton =
-                DesignUtils.SystemButton(EditorMicroAnimations.EditorUI.Icons.Plus)
+                DesignUtils.SystemButton(EditorSpriteSheets.EditorUI.Icons.Plus)
                     .SetName(nameof(addOutputButton))
                     .SetStyleAlignSelf(Align.FlexEnd)
                     .SetOnClick(() =>
                     {
-                        Undo.RecordObject(flowNode, "Add Port");                    //record undo
-                        flowNode.AddOutputPort();                                   //add a new output port
-                        FlowPort port = flowNode.outputPorts.Last();                //get a reference to the newly created port (it's the last one in the list)
+                        Undo.RecordObject(flowNode, "Add Port");                //record undo
+                        flowNode.AddOutputPort();                               //add a new output port
+                        FlowPort port = flowNode.outputPorts.Last();            //get a reference to the newly created port (it's the last one in the list)
                         var portView = new FlowPortView(graphView, this, port); //create a port view for the new port
                         outputPortViews.Add(portView);                          //add port view to the port view list
                         int indexOf = outputContainer.IndexOf(addOutputButton); //get + button index
                         outputContainer.Insert(indexOf, portView);              //insert the port view before the + button (so that the button is always drawn last)
-                        EditorUtility.SetDirty(flowNode);                           //mark the node as dirty
+                        EditorUtility.SetDirty(flowNode);                       //mark the node as dirty
                         EditorUtility.SetDirty(graphView.flowGraph);            //mark the graph as dirty
                         RefreshPorts();                                         //refresh ports
 
-                        AssetDatabase.SaveAssetIfDirty(flowNode);                //save assets
+                        AssetDatabase.SaveAssetIfDirty(flowNode);            //save assets
                         AssetDatabase.SaveAssetIfDirty(graphView.flowGraph); //save assets
 
                         flowNode.RefreshNodeEditor();

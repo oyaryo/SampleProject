@@ -69,9 +69,9 @@ namespace Doozy.Editor.EditorUI.Editors
 
         private void InitializeEditor()
         {
-            root = new VisualElement();
+            root = DesignUtils.GetEditorRoot();
 
-            nameComponentField = FluidField.Get("Palette Name").SetIcon(EditorMicroAnimations.EditorUI.Components.EditorColorPalette);
+            nameComponentField = FluidField.Get("Palette Name").SetIcon(EditorSpriteSheets.EditorUI.Components.EditorColorPalette);
             TextField nameTextField = DesignUtils.NewTextField("PaletteName", true).SetStyleFlexGrow(1);
             nameTextField.RegisterValueChangedCallback(evt =>
             {

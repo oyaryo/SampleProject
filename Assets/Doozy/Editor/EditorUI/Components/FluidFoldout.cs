@@ -158,13 +158,13 @@ namespace Doozy.Editor.EditorUI.Components
             content = layoutContainer.Q<VisualElement>("ContentContainer");
             footer = layoutContainer.Q<VisualElement>("Footer");
 
-            content.Add(animatedContainer = new FluidAnimatedContainer().SetClearOnHide(false));
+            content.Add(animatedContainer = new FluidAnimatedContainer(false));
 
             tabButton =
                 FluidToggleButtonTab.Get()
                     .SetElementSize(ElementSize.Normal)
                     .SetTabPosition(TabPosition.TabOnTop)
-                    .SetIcon(EditorMicroAnimations.EditorUI.Components.CarretRightToDown)
+                    .SetIcon(EditorSpriteSheets.EditorUI.Components.CarretRightToDown)
                     .SetAnimationTrigger(IconAnimationTrigger.OnValueChanged);
 
             tabButton.SetOnValueChanged(value => schedule.Execute(ValueChanged));

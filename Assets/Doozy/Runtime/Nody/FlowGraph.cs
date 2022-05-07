@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Doozy.Runtime.Common.Extensions;
 using Doozy.Runtime.Common.Utils;
 using Doozy.Runtime.Nody.Nodes.System;
 using Doozy.Runtime.UIManager.ScriptableObjects;
@@ -16,12 +17,34 @@ using UnityEngine;
 
 namespace Doozy.Runtime.Nody
 {
+    /// <summary> Scriptable object class used a container for nodes </summary>
     [CreateAssetMenu(menuName = "Doozy/Flow Graph", fileName = "Flow Graph", order = -10)]
     public class FlowGraph : ScriptableObject
     {
+        /// <summary> Pointer to the UIManagerInputSettings instance </summary>
         public static UIManagerInputSettings inputSettings => UIManagerInputSettings.instance;
+        /// <summary> True is Multiplayer Mode is enabled </summary>
         public static bool multiplayerMode => inputSettings.multiplayerMode;
+        /// <summary> Default player index value (used for global user) </summary>
         public static int defaultPlayerIndex => inputSettings.defaultPlayerIndex;
+
+        [SerializeField]
+        public Vector3 EditorPosition = Vector3.zero;
+        /// <summary> Used by the editor to keep track of the graph position inside the Nody window </summary>
+        internal Vector3 editorPosition
+        {
+            get => EditorPosition;
+            set => EditorPosition = value;
+        }
+
+        [SerializeField]
+        public Vector3 EditorScale = Vector3.one;
+        /// <summary> Used by the editor to keep track of the graph scale (zoom) inside the Nody window </summary>
+        internal Vector3 editorScale
+        {
+            get => EditorScale;
+            set => EditorScale = value;
+        }
 
         [SerializeField] private string Id;
         /// <summary> Flow Graph Id </summary>
@@ -32,7 +55,7 @@ namespace Doozy.Runtime.Nody
         }
 
         [SerializeField] private string GraphName;
-        /// <summary> Name of this graph </summary>
+        /// <summary> Name of the graph </summary>
         public string graphName
         {
             get => GraphName;
@@ -40,7 +63,7 @@ namespace Doozy.Runtime.Nody
         }
 
         [SerializeField] private string GraphDescription;
-        /// <summary> Description for this graph </summary>
+        /// <summary> Description for the graph </summary>
         public string graphDescription
         {
             get => GraphDescription;
@@ -48,26 +71,45 @@ namespace Doozy.Runtime.Nody
         }
 
         [SerializeField] private bool IsSubGraph;
+        /// <summary> Flag used to mark the graph as a sub-graph </summary>
         public bool isSubGraph
         {
             get => IsSubGraph;
             set => IsSubGraph = value;
         }
 
+        [SerializeField] protected GraphState GraphState = GraphState.Idle;
+        /// <summary> Current graph state </summary>
+        public GraphState graphState
+        {
+            get => GraphState;
+            set
+            {
+                GraphState = value;
+                OnStateChanged?.Invoke(value);
+            }
+        }
+
+        /// <summary> Triggered every time the graph changes its state </summary>
+        public GraphStateEvent OnStateChanged = new GraphStateEvent();
+
         [SerializeField] private List<FlowNode> Nodes;
-        /// <summary> All the nodes this graph has </summary>
+        /// <summary> All the nodes in the graph </summary>
         public List<FlowNode> nodes
         {
             get => Nodes;
             private set => Nodes = value;
         }
 
-        /// <summary> All the global nodes this graph has </summary>
+        /// <summary> All the global nodes in the graph </summary>
         public IEnumerable<FlowNode> globalNodes =>
             Nodes.Where(node => node.nodeType == NodeType.Global);
 
         [SerializeField] private FlowNode RootNode;
-        /// <summary> Start node. The first node that becomes active/ </summary>
+        /// <summary>
+        /// The first node that becomes active.
+        /// <para/> If this is a graph it will be a Start Node
+        /// <para/> Id this is a sub-graph it will be an Enter Node </summary>
         public FlowNode rootNode
         {
             get => RootNode;
@@ -88,13 +130,13 @@ namespace Doozy.Runtime.Nody
         /// <summary> The port that lead to the previously active node </summary>
         public FlowPort previousActivePort { get; private set; }
 
-        /// <summary> The subgraph that is currently active (can be null) </summary>
+        /// <summary> The sub-graph that is currently active (can be null) </summary>
         public FlowGraph activeSubGraph { get; private set; }
 
-        /// <summary> The parent graph that contains this graph (if this is a subgraph) (can be null) </summary>
+        /// <summary> The parent graph that contains this graph (if this is a sub-graph) (can be null) </summary>
         public FlowGraph parentGraph { get; private set; }
 
-        /// <summary> All the input ports in this graph </summary>
+        /// <summary> All the input ports in the graph </summary>
         public List<FlowPort> inputPorts
         {
             get
@@ -106,7 +148,7 @@ namespace Doozy.Runtime.Nody
             }
         }
 
-        /// <summary> All the output ports in this graph </summary>
+        /// <summary> All the output ports in the graph </summary>
         public List<FlowPort> outputPorts
         {
             get
@@ -118,7 +160,7 @@ namespace Doozy.Runtime.Nody
             }
         }
 
-        /// <summary> All the ports in this graph (input and output) </summary>
+        /// <summary> All the ports in the graph (input and output) </summary>
         public List<FlowPort> ports
         {
             get
@@ -133,9 +175,10 @@ namespace Doozy.Runtime.Nody
             }
         }
 
-        /// <summary> Current controller for this graph </summary>
+        /// <summary> Current controller for the graph </summary>
         public FlowController controller { get; internal set; }
 
+        /// <summary> Construct a new FlowGraph </summary>
         public FlowGraph()
         {
             Id = Guid.NewGuid().ToString();
@@ -143,6 +186,14 @@ namespace Doozy.Runtime.Nody
             Nodes = new List<FlowNode>();
         }
 
+        /// <summary> Reset the graph editor settings used inside the Nody window </summary>
+        internal void ResetEditorSettings()
+        {
+            EditorPosition = Vector3.zero;
+            EditorScale = Vector3.one;
+        }
+
+        /// <summary> Reset the graph </summary>
         public void ResetGraph()
         {
             ClearHistory();
@@ -150,6 +201,7 @@ namespace Doozy.Runtime.Nody
             activeNode = null;
             nodes.ForEach(n => n.ResetNode());
             CleanGraph();
+            graphState = GraphState.Idle;
         }
 
         private void CleanGraph()
@@ -158,12 +210,12 @@ namespace Doozy.Runtime.Nody
             {
                 foreach (FlowPort inputPort in n.inputPorts)
                     foreach (string otherPortId in inputPort.connections.ToList()
-                        .Where(otherPortId => GetPortById(otherPortId) == null))
+                                 .Where(otherPortId => GetPortById(otherPortId) == null))
                         inputPort.connections.Remove(otherPortId);
 
                 foreach (FlowPort outputPort in n.outputPorts)
                     foreach (string otherPortId in outputPort.connections.ToList()
-                        .Where(otherPortId => GetPortById(otherPortId) == null))
+                                 .Where(otherPortId => GetPortById(otherPortId) == null))
                         outputPort.connections.Remove(otherPortId);
             });
         }
@@ -216,30 +268,40 @@ namespace Doozy.Runtime.Nody
 
             tempNodesSet.Clear();
             tempPortsSet.Clear();
-            
+
             tempPortsSet.Add(previousActivePort);
 
-            if (history.All(item => activeNode.passthrough)) 
+            if (history.All(item => activeNode.passthrough))
                 return; //cannot go back as there is no non-passthrough node in history
-            
-            //passthrough check
-            if (history.Peek().activeNode.passthrough) //we may have 1 or more nodes that are passthrough
+
+            GraphHistory peek = history.Peek();
+
+            //multiple entries of the same node in history and passthrough check
+            if (peek.activeNode == activeNode | peek.activeNode.passthrough) //we may have 1 or more nodes that are passthrough
             {
                 while (history.Count > 0) //iterate through history
                 {
-                    if (history.Peek().activeNode.passthrough)               //check for a passthrough node
-                    {                                                        //
-                        tempNodesSet.Add(history.Peek().activeNode);         //save node to be able to ping it (visuals matter)
-                        tempPortsSet.Add(history.Peek().previousActivePort); //save port to be able to ping it (visuals matter)
-                        history.Pop();                                       //pop history and go to the next entry
+                    peek = history.Peek();
+                    if (peek.activeNode == activeNode) //we found the node we are currently clear the pings for the visual need to dig deeper
+                    {
+                        tempNodesSet.Clear(); //don't ping nodes 
+                        tempPortsSet.Clear(); //don't ping ports
+                        history.Pop();
                         continue;
+                    }
 
+                    if (peek.activeNode.passthrough)               //check if the node is passthrough 
+                    {                                              //
+                        tempNodesSet.Add(peek.activeNode);         //save node to be able to ping it (visuals matter)
+                        tempPortsSet.Add(peek.previousActivePort); //save port to be able to ping it (visuals matter)
+                        history.Pop();                             //pop history and go to the next entry
+                        continue;
                     }
 
                     break; //found node that is NOT passthrough -> prepare to activate it
                 }
             }
-            
+
             if (history.Count == 0) return; //cannot go back
 
             if (activeNode != null)
@@ -261,7 +323,7 @@ namespace Doozy.Runtime.Nody
             history.Pop();
 
             activeNode.OnEnter();
-            
+
             tempNodesSet.Clear();
             tempPortsSet.Clear();
         }
@@ -283,34 +345,49 @@ namespace Doozy.Runtime.Nody
             UpdateNodes();
             StartGlobalNodes();
             SetActiveNode(RootNode);
+            graphState = GraphState.Running;
         }
 
+        /// <summary> Resume the graph </summary>
         public void Resume()
         {
             //ToDo: Resume graph
+            graphState = GraphState.Running;
         }
 
         /// <summary> Stop the graph </summary>
         public void Stop()
         {
             StopGlobalNodes();
+            if (activeNode != null)
+                activeNode.OnExit();
+            activeNode = null;
+            graphState = GraphState.Idle;
         }
 
-        /// <summary> Start all the global nodes inside this graph </summary>
+        /// <summary> Start all the global nodes inside the graph </summary>
         public void StartGlobalNodes()
         {
-            foreach (FlowNode node in globalNodes)
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                FlowNode node = nodes[i];
+                if (node.nodeType != NodeType.Global) continue;
                 node.Start();
+            }
 
             if (activeSubGraph != null)
                 activeSubGraph.StartGlobalNodes();
         }
 
-        /// <summary> Stop all the global nodes inside this graph </summary>
+        /// <summary> Stop all the global nodes inside the graph </summary>
         public void StopGlobalNodes()
         {
-            foreach (FlowNode node in globalNodes)
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                FlowNode node = nodes[i];
+                if (node.nodeType != NodeType.Global) continue;
                 node.Stop();
+            }
 
             if (activeSubGraph != null)
                 activeSubGraph.StopGlobalNodes();
@@ -325,9 +402,14 @@ namespace Doozy.Runtime.Nody
             if (activeSubGraph != null)
                 activeSubGraph.FixedUpdate();
 
-            foreach (FlowNode node in globalNodes)
-                if (node != activeNode && node.runFixedUpdate)
-                    node.FixedUpdate();
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                FlowNode node = nodes[i];
+                if (node.nodeType != NodeType.Global) continue;
+                if (node.runFixedUpdate == false) continue;
+                if (node.nodeState == NodeState.Idle) continue;
+                node.FixedUpdate();
+            }
         }
 
         /// <summary> LateUpdate is called every frame, after all Update functions have been called and if this flow has been loaded by a controller </summary>
@@ -339,9 +421,14 @@ namespace Doozy.Runtime.Nody
             if (activeSubGraph != null)
                 activeSubGraph.LateUpdate();
 
-            foreach (FlowNode node in globalNodes)
-                if (node != activeNode && node.runLateUpdate)
-                    node.LateUpdate();
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                FlowNode node = nodes[i];
+                if (node.nodeType != NodeType.Global) continue;
+                if (node.runLateUpdate == false) continue;
+                if (node.nodeState == NodeState.Idle) continue;
+                node.LateUpdate();
+            }
         }
 
         /// <summary> Update is called every frame, if this flow has been loaded by a controller </summary>
@@ -353,19 +440,26 @@ namespace Doozy.Runtime.Nody
             if (activeSubGraph != null)
                 activeSubGraph.Update();
 
-            foreach (FlowNode node in globalNodes)
-                if (node != activeNode && node.runUpdate)
-                    node.Update();
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                FlowNode node = nodes[i];
+                if (node.nodeType != NodeType.Global) continue;
+                if (node.runUpdate == false) continue;
+                if (node.nodeState == NodeState.Idle) continue;
+                node.Update();
+            }
         }
 
         /// <summary> Refresh all the references for the graph's nodes </summary>
         public void UpdateNodes()
         {
-            Nodes = Nodes.Where(n => n != null).ToList();
-            foreach (FlowNode node in Nodes)
-                node.SetFlowGraph(this);
+            Nodes.RemoveNulls();
+            for (int i = 0; i < nodes.Count; i++)
+                nodes[i].SetFlowGraph(this);
         }
 
+        /// <summary> Create a clone of this graph </summary>
+        /// <returns> The cloned graph </returns>
         public FlowGraph Clone()
         {
             FlowGraph flowClone = Instantiate(this);

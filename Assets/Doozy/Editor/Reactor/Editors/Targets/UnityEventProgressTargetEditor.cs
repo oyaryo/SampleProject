@@ -21,7 +21,7 @@ namespace Doozy.Editor.Reactor.Editors.Targets
     [CustomEditor(typeof(UnityEventProgressTarget), true)]
     public class UnityEventProgressTargetEditor: ProgressTargetEditor
     {
-        public override IEnumerable<Texture2D> targetIconTextures => EditorMicroAnimations.Reactor.Icons.UnityEventProgressTarget;
+        public override IEnumerable<Texture2D> targetIconTextures => EditorSpriteSheets.Reactor.Icons.UnityEventProgressTarget;
 
         private FluidToggleSwitch wholeNumbersSwitch { get; set; }
         private SerializedProperty propertyWholeNumbers { get; set; }
@@ -55,7 +55,7 @@ namespace Doozy.Editor.Reactor.Editors.Targets
         {
             FindProperties();
 
-            root = new VisualElement();
+            root = DesignUtils.GetEditorRoot();
 
             componentHeader = FluidComponentHeader.Get()
                 .SetAccentColor(accentColor)
@@ -64,6 +64,7 @@ namespace Doozy.Editor.Reactor.Editors.Targets
                 .SetComponentTypeText("Progress Target")
                 .SetComponentNameText("UnityEvent")
                 .AddManualButton()
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.Reactor.Targets.ProgressTargets.UnityEventProgressTarget.html")
                 .AddYouTubeButton();
             
             targetModeEnumField =

@@ -116,7 +116,13 @@ namespace Doozy.Editor.Reactor.Drawers
                     // ignored
                 }
             });
-            playModeField.schedule.Execute(() => UpdatePlayMode((PlayMode)playModeEnum.value));
+
+            playModeField?.schedule.Execute(() =>
+            {
+                if (playModeEnum?.value == null) return;
+                var playMode = (PlayMode)playModeEnum.value;
+                UpdatePlayMode(playMode);
+            });
 
             void UpdatePlayMode(PlayMode playMode)
             {
@@ -131,19 +137,19 @@ namespace Doozy.Editor.Reactor.Drawers
                 switch (playMode)
                 {
                     case PlayMode.Normal:
-                        animatedIconTextures = hasLoops ? EditorMicroAnimations.EditorUI.Icons.Loop : EditorMicroAnimations.EditorUI.Icons.OneShot;
+                        animatedIconTextures = hasLoops ? EditorSpriteSheets.EditorUI.Icons.Loop : EditorSpriteSheets.EditorUI.Icons.OneShot;
                         playModeEnum.SetTooltip("Normal - current value goes from start value and target value");
                         break;
                     case PlayMode.PingPong:
-                        animatedIconTextures = hasLoops ? EditorMicroAnimations.EditorUI.Icons.PingPong : EditorMicroAnimations.EditorUI.Icons.PingPongOnce;
+                        animatedIconTextures = hasLoops ? EditorSpriteSheets.EditorUI.Icons.PingPong : EditorSpriteSheets.EditorUI.Icons.PingPongOnce;
                         playModeEnum.SetTooltip("PingPong - current value goes between start and target values back and forth");
                         break;
                     case PlayMode.Spring:
-                        animatedIconTextures = EditorMicroAnimations.EditorUI.Icons.Spring;
+                        animatedIconTextures = EditorSpriteSheets.EditorUI.Icons.Spring;
                         playModeEnum.SetTooltip("Spring - current value goes between start and target values back and forth and returns to the start value as if connected by a spring");
                         break;
                     case PlayMode.Shake:
-                        animatedIconTextures = EditorMicroAnimations.EditorUI.Icons.Shake;
+                        animatedIconTextures = EditorSpriteSheets.EditorUI.Icons.Shake;
                         playModeEnum.SetTooltip("Shake - current value randomly 'shakes' between start and target values back and forth and returns to the start value");
                         break;
                     default:
@@ -171,8 +177,9 @@ namespace Doozy.Editor.Reactor.Drawers
             });
             easeModeField.schedule.Execute(() =>
             {
-                if (easeModeEnum != null)
-                    UpdateEaseMode((EaseMode)easeModeEnum.value);
+                if (easeModeEnum?.value == null) return;
+                var easeMode = (EaseMode)easeModeEnum.value;
+                UpdateEaseMode(easeMode);
             });
 
             void UpdateEaseMode(EaseMode easeMode)
@@ -306,12 +313,11 @@ namespace Doozy.Editor.Reactor.Drawers
             Toggle useRandom
         )
         {
-            
             value.ResetLayout();
             useRandom.SetStyleDisplay(DisplayStyle.None);
 
             FluidToggleButtonTab randomButton =
-                FluidToggleButtonTab.Get(EditorMicroAnimations.EditorUI.Icons.Dice)
+                FluidToggleButtonTab.Get(EditorSpriteSheets.EditorUI.Icons.Dice)
                     .SetTooltip("Random Value")
                     .SetElementSize(ElementSize.Normal)
                     .SetTabPosition(TabPosition.FloatingTab)

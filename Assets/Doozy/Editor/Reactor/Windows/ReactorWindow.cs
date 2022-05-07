@@ -12,6 +12,7 @@ using Doozy.Editor.EditorUI.Utils;
 using Doozy.Editor.EditorUI.Windows.Internal;
 using Doozy.Editor.Reactor.Components;
 using Doozy.Editor.Reactor.Layouts;
+using Doozy.Editor.UIElements;
 using Doozy.Runtime.Reactor.ScriptableObjects;
 using Doozy.Runtime.UIElements.Extensions;
 using UnityEditor;
@@ -46,7 +47,7 @@ namespace Doozy.Editor.Reactor.Windows
         private ReactorPresetsWindowLayout m_PresetsWindowLayout;
         private ReactorSettingsWindowLayout m_SettingsWindowLayout;
 
-        public IEnumerable<Texture2D> reactorIconTextures => EditorMicroAnimations.Reactor.Icons.ReactorIconToFull;
+        public IEnumerable<Texture2D> reactorIconTextures => EditorSpriteSheets.Reactor.Icons.ReactorIconToFull;
 
         protected override void OnEnable()
         {
@@ -60,7 +61,9 @@ namespace Doozy.Editor.Reactor.Windows
             accentColor = EditorColors.Reactor.Red;
             selectableAccentColor = EditorSelectableColors.Reactor.Red;
 
-            root.Add(templateContainer = EditorLayouts.Reactor.ReactorWindow.CloneTree());
+            root
+                .RecycleAndClear()
+                .Add(templateContainer = EditorLayouts.Reactor.ReactorWindow.CloneTree());
             templateContainer
                 .AddStyle(EditorUI.EditorStyles.Reactor.ReactorWindow)
                 .SetStyleFlexGrow(1);

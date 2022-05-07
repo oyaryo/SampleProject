@@ -81,18 +81,18 @@ namespace Doozy.Editor.EditorUI.Editors
 
         private void InitializeEditor()
         {
-            root = new VisualElement();
+            root = DesignUtils.GetEditorRoot();
             
             loadFilesFromFolderButton =
                 FluidButton.Get()
-                    .SetIcon(EditorMicroAnimations.EditorUI.Icons.Search)
+                    .SetIcon(EditorSpriteSheets.EditorUI.Icons.Search)
                     .SetLabelText("Load all .uss files from the current folder")
                     .SetAccentColor(EditorSelectableColors.EditorUI.Amber)
                     .SetButtonStyle(ButtonStyle.Contained)
                     .SetElementSize(ElementSize.Small)
                     .SetOnClick(LoadUssReferencesFromFolder);
 
-            nameComponentField = FluidField.Get("Style Group Name").SetIcon(EditorMicroAnimations.EditorUI.Components.EditorStyleGroup);
+            nameComponentField = FluidField.Get("Style Group Name").SetIcon(EditorSpriteSheets.EditorUI.Components.EditorStyleGroup);
             TextField nameTextField = DesignUtils.NewTextField("GroupName", true).SetStyleFlexGrow(1);
             nameTextField.RegisterValueChangedCallback(evt =>
             {

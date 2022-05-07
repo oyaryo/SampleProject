@@ -20,7 +20,7 @@ namespace Doozy.Editor.Reactor.Editors.Targets
     [CustomEditor(typeof(TextMeshProProgressTarget), true)]
     public class TextMeshProProgressTargetEditorr : ProgressTargetEditor
     {
-        public override IEnumerable<Texture2D> targetIconTextures => EditorMicroAnimations.Reactor.Icons.TextMeshProProgressTarget;
+        public override IEnumerable<Texture2D> targetIconTextures => EditorSpriteSheets.Reactor.Icons.TextMeshProProgressTarget;
 
         private FluidToggleSwitch wholeNumbersSwitch { get; set; }
         private SerializedProperty propertyWholeNumbers { get; set; }
@@ -67,6 +67,7 @@ namespace Doozy.Editor.Reactor.Editors.Targets
             componentHeader
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(TextMeshPro)))
                 .AddManualButton()
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.Reactor.Targets.ProgressTargets.TextMeshProProgressTarget.html")
                 .AddYouTubeButton();
 
             targetObjectField

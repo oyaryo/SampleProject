@@ -9,7 +9,9 @@ using Doozy.Editor.EditorUI;
 using Doozy.Editor.EditorUI.Components;
 using Doozy.Editor.EditorUI.Components.Internal;
 using Doozy.Editor.EditorUI.ScriptableObjects.Colors;
+using Doozy.Editor.EditorUI.Utils;
 using Doozy.Editor.EditorUI.Windows.Internal;
+using Doozy.Editor.UIElements;
 using Doozy.Runtime.UIElements.Extensions;
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -26,6 +28,9 @@ namespace Doozy.Editor.UIManager.Windows
         public static void Open() => InternalOpenWindow(WINDOW_TITLE);
 
         public static EditorSelectableColorInfo buttonAccentColor => EditorSelectableColors.EditorUI.Blue;
+        
+        private string sideMenuWidthKey => EditorPrefsKey($"{nameof(sideMenu)}.{nameof(sideMenu.customWidth)}");
+        private string sideMenuIsCollapsedKey => EditorPrefsKey($"{nameof(sideMenu)}.{nameof(sideMenu.isCollapsed)}");
 
         public TemplateContainer templateContainer { get; private set; }
         public VisualElement layoutContainer { get; private set; }
@@ -33,10 +38,13 @@ namespace Doozy.Editor.UIManager.Windows
         public VisualElement contentContainer { get; private set; }
 
         private FluidSideMenu sideMenu { get; set; }
+        private FluidResizer sideMenuResizer { get; set; }
 
         protected override void CreateGUI()
         {
-            root.Add(templateContainer = EditorLayouts.UIManager.UIManagerWindow.CloneTree());
+            root
+                .RecycleAndClear()
+                .Add(templateContainer = EditorLayouts.UIManager.UIManagerWindow.CloneTree());
 
             templateContainer
                 .SetStyleFlexGrow(1)
@@ -46,9 +54,41 @@ namespace Doozy.Editor.UIManager.Windows
             sideMenuContainer = layoutContainer.Q<VisualElement>(nameof(sideMenuContainer));
             contentContainer = layoutContainer.Q<VisualElement>(nameof(contentContainer));
 
-            sideMenuContainer.Add(sideMenu = new FluidSideMenu());
-            sideMenu.IsCollapsable(true);
-            sideMenu.SetCustomWidth(200);
+            sideMenu =
+                new FluidSideMenu()
+                    .IsCollapsable(true);
+
+            if (sideMenu.isCollapsable)
+            {
+                bool sideMenuIsCollapsed = EditorPrefs.GetBool(sideMenuIsCollapsedKey, false);
+                if (sideMenuIsCollapsed)
+                    sideMenu.CollapseMenu(false);
+                else
+                    sideMenu.ExpandMenu(false);
+            }
+            
+            sideMenu.OnCollapse += () => EditorPrefs.SetBool(sideMenuIsCollapsedKey, true);
+            sideMenu.OnExpand += () => EditorPrefs.SetBool(sideMenuIsCollapsedKey, false);
+
+            sideMenu.SetCustomWidth(EditorPrefs.GetInt(sideMenuWidthKey, 200));
+            sideMenuResizer = new FluidResizer(FluidResizer.Position.Right);
+            sideMenuResizer.onPointerMoveEvent += evt =>
+            {
+                if (sideMenu.isCollapsed) return;
+                sideMenu.SetCustomWidth((int)(sideMenu.customWidth + evt.deltaPosition.x));
+            };
+            sideMenuResizer.onPointerUp += evt =>
+            {
+                if (sideMenu.isCollapsed) return;
+                EditorPrefs.SetInt(sideMenuWidthKey, sideMenu.customWidth);
+            };
+
+            sideMenuContainer.Add
+            (
+                DesignUtils.row
+                    .AddChild(sideMenu)
+                    .AddChild(sideMenuResizer)
+            );
 
             foreach (IUIManagerWindowLayout layout in GetLayouts().OrderBy(l => l.order))
             {

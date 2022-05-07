@@ -22,7 +22,7 @@ namespace Doozy.Editor.UIManager.Editors.Input
     [CustomEditor(typeof(MultiplayerInfo), true)]
     public class MultiplayerInfoEditor : UnityEditor.Editor
     {
-        private static IEnumerable<Texture2D> multiplayerInfoIconTextures => EditorMicroAnimations.UIManager.Icons.MultiplayerInfo;
+        private static IEnumerable<Texture2D> multiplayerInfoIconTextures => EditorSpriteSheets.UIManager.Icons.MultiplayerInfo;
 
         private static Color accentColor => EditorColors.UIManager.InputComponent;
         private static EditorSelectableColorInfo selectableAccentColor => EditorSelectableColors.UIManager.InputComponent;
@@ -74,8 +74,7 @@ namespace Doozy.Editor.UIManager.Editors.Input
         private void InitializeEditor()
         {
             FindProperties();
-
-            root = new VisualElement();
+            root = DesignUtils.GetEditorRoot();
 
             componentHeader =
                 FluidComponentHeader.Get()
@@ -84,6 +83,7 @@ namespace Doozy.Editor.UIManager.Editors.Input
                     .SetComponentNameText((ObjectNames.NicifyVariableName(nameof(MultiplayerInfo))))
                     .SetIcon(multiplayerInfoIconTextures.ToList())
                     .AddManualButton("https://doozyentertainment.atlassian.net/wiki/spaces/DUI4/pages/1046642771/Multiplayer+Info?atlOrigin=eyJpIjoiM2RlOGU4MDljZjE1NDYxNWE3NTdjY2JjY2U0MjkxMGUiLCJwIjoiYyJ9")
+                    .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.UIManager.Input.MultiplayerInfo.html")
                     .AddYouTubeButton();
 
             autoUpdateSwitch =

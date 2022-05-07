@@ -86,9 +86,9 @@ namespace Doozy.Editor.EditorUI.Components
         public bool hasToolbar { get; internal set; }
         private bool hideFooterWhenEmpty { get; set; }
 
-        private static IEnumerable<Texture2D> emptyListPlaceholderTextures => EditorMicroAnimations.EditorUI.Placeholders.EmptyListView;
-        private static IEnumerable<Texture2D> emptyListSmallPlaceholderTextures => EditorMicroAnimations.EditorUI.Placeholders.EmptySmall;
-        private static IEnumerable<Texture2D> emptySearchPlaceholderTextures => EditorMicroAnimations.EditorUI.Placeholders.EmptySearch;
+        private static IEnumerable<Texture2D> emptyListPlaceholderTextures => EditorSpriteSheets.EditorUI.Placeholders.EmptyListView;
+        private static IEnumerable<Texture2D> emptyListSmallPlaceholderTextures => EditorSpriteSheets.EditorUI.Placeholders.EmptySmall;
+        private static IEnumerable<Texture2D> emptySearchPlaceholderTextures => EditorSpriteSheets.EditorUI.Placeholders.EmptySearch;
 
         private bool showEmptyListPlaceholder { get; set; } = true;
         private bool useSmallEmptyListPlaceholder { get; set; } = false;
@@ -104,6 +104,7 @@ namespace Doozy.Editor.EditorUI.Components
         public int preferredListHeight { get; private set; }
         public bool hideToolbarWhileSearching { get; private set; }
         public bool addNewItemButtonIsHidden { get; private set; }
+        public bool disableToolbarWhenEmpty { get; private set; } = true;
 
         //SELECTABLE COLORS
         private static EditorSelectableColorInfo actionSelectableColor => EditorSelectableColors.Default.Action;
@@ -188,13 +189,13 @@ namespace Doozy.Editor.EditorUI.Components
 
             //LIST VIEW
             preferredListHeight = LIST_MINIMUM_HEIGHT;
-            
+
             #if UNITY_2021_2_OR_NEWER
             listView.fixedItemHeight = LIST_ITEM_HEIGHT;
             #else
             listView.itemHeight = LIST_ITEM_HEIGHT;
             #endif
-            
+
             // listView.RegisterCallback<AttachToPanelEvent>(evt => Undo.undoRedoPerformed += Update);
             // listView.RegisterCallback<DetachFromPanelEvent>(evt => Undo.undoRedoPerformed -= Update);
 
@@ -213,7 +214,6 @@ namespace Doozy.Editor.EditorUI.Components
                 AddNewItemButtonCallback?.Invoke(); //set placeholder on click to add a new item (if not in search mode)
             });
             emptyListPlaceholder.AddManipulator(emptyListPlaceholderClickable);
-
 
             //PLACEHOLDER - Empty Search
             emptySearchPlaceholder = FluidPlaceholder.Get(emptySearchPlaceholderTextures).Hide();
@@ -267,9 +267,10 @@ namespace Doozy.Editor.EditorUI.Components
 
             if (!hasToolbar) return;
 
-            if (listViewIsEmpty)
+            if (listViewIsEmpty & disableToolbarWhenEmpty)
             {
-                if (inSearchMode == false) //do not disable toolbar if in search mode
+                //do not disable toolbar if in search mode
+                if (inSearchMode == false) 
                     toolbarContainer.DisableElement();
             }
             else
@@ -348,6 +349,13 @@ namespace Doozy.Editor.EditorUI.Components
 
         #endregion
 
+        public FluidListView SetDisableToolbarWhenEmpty(bool disableWhenEmpty)
+        {
+            disableToolbarWhenEmpty = disableWhenEmpty;
+            VisualUpdate_Toolbar();
+            return this;
+        }
+        
         public FluidListView SetFooterLabelText(string text)
         {
             footerLabel.text = text;
@@ -383,20 +391,20 @@ namespace Doozy.Editor.EditorUI.Components
             #else
             listView.itemHeight = itemHeight;
             #endif
-            
+
             return this;
         }
 
         public FluidListView ShowItemIndex(bool show)
         {
             showItemIndex = show;
-            
+
             #if UNITY_2021_2_OR_NEWER
             listView.Rebuild();
             #else
             listView.Refresh();
             #endif
-            
+
             return this;
         }
 
@@ -571,13 +579,13 @@ namespace Doozy.Editor.EditorUI.Components
                     .SetAccentColor(accentColor)
                     .SetTooltip(tooltip);
 
-            public static FluidButton addButton => GetNewToolbarButton(EditorMicroAnimations.EditorUI.Icons.Plus, "Add Item").SetAccentColor(addSelectableColor);
-            public static FluidButton removeButton => GetNewToolbarButton(EditorMicroAnimations.EditorUI.Icons.Minus, "Remove Item").SetAccentColor(removeSelectableColor);
-            public static FluidButton clearButton => GetNewToolbarButton(EditorMicroAnimations.EditorUI.Icons.Clear, "Clear");
-            public static FluidButton sortAzButton => GetNewToolbarButton(EditorMicroAnimations.EditorUI.Icons.SortAz, "Sort AZ");
-            public static FluidButton sortZaButton => GetNewToolbarButton(EditorMicroAnimations.EditorUI.Icons.SortZa, "Sort ZA");
-            public static FluidButton sortHueButton => GetNewToolbarButton(EditorMicroAnimations.EditorUI.Icons.SortHue, "Sort HUE");
-            public static FluidButton saveButton => GetNewToolbarButton(EditorMicroAnimations.EditorUI.Icons.Save, "Save");
+            public static FluidButton addButton => GetNewToolbarButton(EditorSpriteSheets.EditorUI.Icons.Plus, "Add Item").SetAccentColor(addSelectableColor);
+            public static FluidButton removeButton => GetNewToolbarButton(EditorSpriteSheets.EditorUI.Icons.Minus, "Remove Item").SetAccentColor(removeSelectableColor);
+            public static FluidButton clearButton => GetNewToolbarButton(EditorSpriteSheets.EditorUI.Icons.Clear, "Clear");
+            public static FluidButton sortAzButton => GetNewToolbarButton(EditorSpriteSheets.EditorUI.Icons.SortAz, "Sort AZ");
+            public static FluidButton sortZaButton => GetNewToolbarButton(EditorSpriteSheets.EditorUI.Icons.SortZa, "Sort ZA");
+            public static FluidButton sortHueButton => GetNewToolbarButton(EditorSpriteSheets.EditorUI.Icons.SortHue, "Sort HUE");
+            public static FluidButton saveButton => GetNewToolbarButton(EditorSpriteSheets.EditorUI.Icons.Save, "Save");
         }
     }
 }

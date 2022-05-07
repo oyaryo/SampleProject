@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using Doozy.Runtime.Common.Extensions;
+using Doozy.Runtime.Common.Utils;
 using Doozy.Runtime.Mody;
 using Doozy.Runtime.Mody.Actions;
 using Doozy.Runtime.Reactor;
@@ -13,32 +14,74 @@ using UnityEngine;
 
 namespace Doozy.Runtime.UIManager.Modules
 {
-    [AddComponentMenu("Doozy/UI/Modules/Animator Module")]
+    /// <summary> Mody module used to control a list of Reactor animators </summary>
+    [AddComponentMenu("Mody/Animator Module")]
     public class AnimatorModule : ModyModule
     {
-        public const string k_DefaultModuleName = "Animator Module";
+        #if UNITY_EDITOR
+        [UnityEditor.MenuItem("GameObject/Mody/Animator Module", false, 8)]
+        private static void CreateComponent(UnityEditor.MenuCommand menuCommand)
+        {
+            GameObjectUtils.AddToScene<AnimatorModule>("Animator Module", false, true);
+        }
+        #endif
+        
+        /// <summary> Default module name </summary>
+        public const string k_DefaultModuleName = "Animator";
 
+        /// <summary> Construct an Animator Module with the default name </summary>
         public AnimatorModule() : this(k_DefaultModuleName) {}
 
+        /// <summary> Construct an Animator Module with the given name </summary>
+        /// <param name="moduleName"> Module name </param>
         public AnimatorModule(string moduleName) : base(moduleName.IsNullOrEmpty() ? k_DefaultModuleName : moduleName) {}
 
+        /// <summary> All the animators controlled by this module </summary>
         public List<ReactorAnimator> Animators = new List<ReactorAnimator>();
 
+        /// <summary> Simple action to Play forward for all animations </summary>
         public SimpleModyAction PlayForward;
+        
+        /// <summary> Simple action to Play in reverse for all animations </summary>
         public SimpleModyAction PlayReverse;
+        
+        /// <summary> Simple action to Stop playing for all animations (does not call Finish) </summary>
         public SimpleModyAction Stop;
+        
+        /// <summary> Simple action to Finish playing for all animations(also calls Stop) </summary>
         public SimpleModyAction Finish;
+        
+        /// <summary> Simple action to Reverse all playing animations </summary>
         public SimpleModyAction Reverse;
+        
+        /// <summary> Simple action to Rewind all animations </summary>
         public SimpleModyAction Rewind;
+        
+        /// <summary> Simple action to Pause all playing animations </summary>
         public SimpleModyAction Pause;
+        
+        /// <summary> Simple action to Resume all paused animations </summary>
         public SimpleModyAction Resume;
+        
+        /// <summary> Float action to set the progress of all animations to a given value </summary>
         public FloatModyAction SetProgressAt;
+        
+        /// <summary> Simple action to set the progress of all animations to zero </summary>
         public SimpleModyAction SetProgressAtZero;
+        
+        /// <summary> Simple action to set the progress of all animations to one </summary>
         public SimpleModyAction SetProgressAtOne;
+        
+        /// <summary> Float action to Play all the animations to a given progress value (from the current value) </summary>
         public FloatModyAction PlayToProgress;
+        
+        /// <summary> Float action to Play all the animations from a given progress value (to the current value) </summary>
         public FloatModyAction PlayFromProgress;
+        
+        /// <summary> Simple action to Update the values for all the animations </summary>
         public SimpleModyAction UpdateValues;
 
+        /// <summary> Initialize the actions </summary>
         protected override void SetupActions()
         {
             this.AddAction(PlayForward ??= new SimpleModyAction(this, nameof(PlayForward), ExecutePlayForward));
@@ -57,6 +100,7 @@ namespace Doozy.Runtime.UIManager.Modules
             this.AddAction(UpdateValues ??= new SimpleModyAction(this, nameof(UpdateValues), ExecuteUpdateValues));
         }
 
+        /// <summary> Remove any null animator references </summary>
         public void CleanAnimatorsList()
         {
             for (int i = Animators.Count - 1; i >= 0; i--)
@@ -64,6 +108,7 @@ namespace Doozy.Runtime.UIManager.Modules
                     Animators.RemoveAt(i);
         }
 
+        /// <summary> Execute Play forward for all animations </summary>
         public void ExecutePlayForward()
         {
             CleanAnimatorsList();
@@ -71,6 +116,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.Play(PlayDirection.Forward);
         }
 
+        /// <summary> Execute Play in reverse for all animations </summary>
         public void ExecutePlayReverse()
         {
             CleanAnimatorsList();
@@ -78,6 +124,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.Play(PlayDirection.Reverse);
         }
 
+        /// <summary> Execute Stop for all animations </summary>
         public void ExecuteStop()
         {
             CleanAnimatorsList();
@@ -85,6 +132,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.Stop();
         }
 
+        /// <summary> Execute Finish for all animations </summary>
         public void ExecuteFinish()
         {
             CleanAnimatorsList();
@@ -92,6 +140,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.Finish();
         }
 
+        /// <summary> Execute Reverse for all animations </summary>
         public void ExecuteReverse()
         {
             CleanAnimatorsList();
@@ -99,6 +148,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.Reverse();
         }
 
+        /// <summary> Execute Rewind for all animations </summary>
         public void ExecuteRewind()
         {
             CleanAnimatorsList();
@@ -106,6 +156,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.Rewind();
         }
         
+        /// <summary> Execute Pause for all animations </summary>
         public void ExecutePause()
         {
             CleanAnimatorsList();
@@ -113,6 +164,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.Pause();
         }
         
+        /// <summary> Execute Resume for all animations </summary>
         public void ExecuteResume()
         {
             CleanAnimatorsList();
@@ -120,6 +172,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.Resume();
         }
         
+        /// <summary> Execute SetProgressAt the given value for all animations </summary>
         public void ExecuteSetProgressAt(float value)
         {
             CleanAnimatorsList();
@@ -127,6 +180,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.SetProgressAt(value);
         }
         
+        /// <summary> Execute SetProgressAtZero for all animations </summary>
         public void ExecuteSetProgressAtZero()
         {
             CleanAnimatorsList();
@@ -134,6 +188,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.SetProgressAtZero();
         }
         
+        /// <summary> Execute SetProgressAtOne for all animations </summary>
         public void ExecuteSetProgressAtOne()
         {
             CleanAnimatorsList();
@@ -141,6 +196,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.SetProgressAtOne();
         }
         
+        /// <summary> Execute PlayToProgress to the given value for all animations </summary>
         public void ExecutePlayToProgress(float value)
         {
             CleanAnimatorsList();
@@ -148,6 +204,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.PlayToProgress(value);
         }
         
+        /// <summary> Execute PlayFromProgress from the given value for all animations </summary>
         public void ExecutePlayFromProgress(float value)
         {
             CleanAnimatorsList();
@@ -155,6 +212,7 @@ namespace Doozy.Runtime.UIManager.Modules
                 animator.PlayFromProgress(value);
         }
         
+        /// <summary> Execute UpdateValues for all animations </summary>
         public void ExecuteUpdateValues()
         {
             CleanAnimatorsList();

@@ -15,7 +15,7 @@ namespace Doozy.Editor.Nody.Nodes
     [CustomEditor(typeof(StartNode))]
     public class StartNodeEditor : FlowNodeEditor
     {
-        public override IEnumerable<Texture2D> nodeIconTextures => EditorMicroAnimations.Nody.Icons.StartNode;
+        public override IEnumerable<Texture2D> nodeIconTextures => EditorSpriteSheets.Nody.Icons.StartNode;
         public override Color nodeAccentColor => EditorColors.Nody.StickyNote;
         
         
@@ -26,6 +26,7 @@ namespace Doozy.Editor.Nody.Nodes
             componentHeader
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(StartNode)))
                 .AddManualButton("https://doozyentertainment.atlassian.net/wiki/spaces/DUI4/pages/1048150085/Start+Node?atlOrigin=eyJpIjoiYzQ5MzI0MzA3M2NiNDBkZTg0NmFhZjQwNzY0YWI3MDgiLCJwIjoiYyJ9")
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.Nody.Nodes.System.StartNode.html")
                 .AddYouTubeButton();
 
         }

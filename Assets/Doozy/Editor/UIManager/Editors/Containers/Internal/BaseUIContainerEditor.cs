@@ -2,7 +2,6 @@
 // This code can only be used under the standard Unity Asset Store End User License Agreement
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Doozy.Editor.EditorUI;
@@ -10,16 +9,19 @@ using Doozy.Editor.EditorUI.Components;
 using Doozy.Editor.EditorUI.Components.Internal;
 using Doozy.Editor.EditorUI.ScriptableObjects.Colors;
 using Doozy.Editor.EditorUI.Utils;
+using Doozy.Editor.Reactor.Components;
+using Doozy.Editor.Reactor.Ticker;
 using Doozy.Editor.UIElements;
-using Doozy.Runtime.Mody;
+using Doozy.Editor.UIManager.Components;
+using Doozy.Runtime.Common.Extensions;
+using Doozy.Runtime.Reactor;
 using Doozy.Runtime.UIElements.Extensions;
 using Doozy.Runtime.UIManager;
+using Doozy.Runtime.UIManager.Animators;
 using Doozy.Runtime.UIManager.Containers;
-using Doozy.Runtime.UIManager.Events;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.UIElements;
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -27,73 +29,28 @@ namespace Doozy.Editor.UIManager.Editors.Containers.Internal
 {
     public abstract class BaseUIContainerEditor : UnityEditor.Editor
     {
-        public static IEnumerable<Texture2D> arrowDownIconTextures => EditorMicroAnimations.EditorUI.Arrows.ArrowDown;
-        public static IEnumerable<Texture2D> arrowUpIconTextures => EditorMicroAnimations.EditorUI.Arrows.ArrowUp;
-        public static IEnumerable<Texture2D> hideIconTextures => EditorMicroAnimations.EditorUI.Icons.Hide;
-        public static IEnumerable<Texture2D> resetIconTextures => EditorMicroAnimations.EditorUI.Icons.Reset;
-        public static IEnumerable<Texture2D> settingsIconTextures => EditorMicroAnimations.EditorUI.Icons.Settings;
-        public static IEnumerable<Texture2D> showIconTextures => EditorMicroAnimations.EditorUI.Icons.Show;
-        public static IEnumerable<Texture2D> unityIconTextures => EditorMicroAnimations.EditorUI.Icons.UnityEvent;
-
         protected virtual Color accentColor => EditorColors.UIManager.UIComponent;
         protected virtual EditorSelectableColorInfo selectableAccentColor => EditorSelectableColors.UIManager.UIComponent;
 
-        protected UIContainer uiContainer => (UIContainer)target;
-        protected IEnumerable<UIContainer> uiContainers => targets.Cast<UIContainer>();
+        protected UIContainer castedContainer => (UIContainer)target;
+        protected List<UIContainer> castedContainers => targets.Cast<UIContainer>().ToList();
 
-        protected ModyEvent onShowCallback => uiContainer.OnShowCallback;
-        protected bool hasOnShowCallback => onShowCallback is { Enabled: true } && onShowCallback.hasEvents | onShowCallback.hasRunners;
-
-        protected ModyEvent onVisibleCallback => uiContainer.OnVisibleCallback;
-        protected bool hasOnVisibleCallback => onVisibleCallback is { Enabled: true } && onVisibleCallback.hasEvents | onVisibleCallback.hasRunners;
-
-        protected ModyEvent onHideCallback => uiContainer.OnHideCallback;
-        protected bool hasOnHideCallback => onHideCallback is { Enabled: true } && onHideCallback.hasEvents | onHideCallback.hasRunners;
-
-        protected ModyEvent onHiddenCallback => uiContainer.OnHiddenCallback;
-        protected bool hasOnHiddenCallback => onHiddenCallback is { Enabled: true } && onHiddenCallback.hasEvents | onHiddenCallback.hasRunners;
-
-        protected VisibilityStateEvent onVisibilityChangedCallback => uiContainer.OnVisibilityChangedCallback;
-        protected bool hasOnVisibilityChangedCallback => onVisibilityChangedCallback != null && onVisibilityChangedCallback.GetPersistentEventCount() > 0;
-
-        protected bool hasCallbacks => hasOnShowCallback | hasOnVisibleCallback | hasOnHideCallback | hasOnHiddenCallback | hasOnVisibilityChangedCallback;
+        protected List<BaseUIContainerAnimator> containerAnimators { get; set; }
 
         protected VisualElement root { get; set; }
+        protected ContainerReactionControls reactionControls { get; set; }
         protected FluidComponentHeader componentHeader { get; set; }
+        protected VisualElement toolbarContainer { get; private set; }
+        protected VisualElement contentContainer { get; private set; }
 
-        protected EnabledIndicator callbacksTabIndicator { get; set; }
+        protected FluidToggleGroup tabsGroup { get; set; }
+        protected FluidTab settingsTab { get; set; }
+        protected FluidTab callbacksTab { get; set; }
+        protected FluidTab progressorsTab { get; set; }
 
-        protected FluidAnimatedContainer callbacksAnimatedContainer { get; set; }
         protected FluidAnimatedContainer settingsAnimatedContainer { get; set; }
-
-        protected FluidButton getCustomPositionButton { get; set; }
-        protected FluidButton resetCustomPositionButton { get; set; }
-        protected FluidButton setCustomPositionButton { get; set; }
-
-        protected FluidField autoHideAfterShowField { get; set; }
-        protected FluidField customStartPositionField { get; set; }
-        protected FluidField onStartBehaviourField { get; set; }
-        protected FluidField whenHiddenField { get; set; }
-        protected FluidField clearSelectedField { get; set; }
-        protected FluidField autoSelectAfterShowField { get; set; }
-
-        protected FluidToggleButtonTab callbacksTabButton { get; set; }
-        protected FluidToggleButtonTab settingsTabButton { get; set; }
-
-        protected FluidToggleGroup toggleGroup { get; set; }
-
-        protected FluidToggleSwitch autoHideAfterShowSwitch { get; set; }
-        protected FluidToggleSwitch disableCanvasWhenHiddenSwitch { get; set; }
-        protected FluidToggleSwitch disableGameObjectWhenHiddenSwitch { get; set; }
-        protected FluidToggleSwitch disableGraphicRaycasterWhenHiddenSwitch { get; set; }
-        protected FluidToggleSwitch useCustomStartPositionSwitch { get; set; }
-        protected FluidToggleSwitch clearSelectedOnHideSwitch { get; set; }
-        protected FluidToggleSwitch clearSelectedOnShowSwitch { get; set; }
-        protected FluidToggleSwitch autoSelectAfterShowSwitch { get; set; }
-
-        protected ObjectField autoSelectTargetObjectField { get; set; }
-
-        protected VisualElement callbacksTab { get; set; }
+        protected FluidAnimatedContainer callbacksAnimatedContainer { get; set; }
+        protected FluidAnimatedContainer progressorsAnimatedContainer { get; set; }
 
         protected SerializedProperty propertyOnStartBehaviour { get; set; }
         protected SerializedProperty propertyOnShowCallback { get; set; }
@@ -101,6 +58,9 @@ namespace Doozy.Editor.UIManager.Editors.Containers.Internal
         protected SerializedProperty propertyOnHideCallback { get; set; }
         protected SerializedProperty propertyOnHiddenCallback { get; set; }
         protected SerializedProperty propertyOnVisibilityChangedCallback { get; set; }
+        protected SerializedProperty propertyShowProgressors { get; set; }
+        protected SerializedProperty propertyHideProgressors { get; set; }
+        protected SerializedProperty propertyShowHideProgressors { get; set; }
         protected SerializedProperty propertyCustomStartPosition { get; set; }
         protected SerializedProperty propertyUseCustomStartPosition { get; set; }
         protected SerializedProperty propertyAutoHideAfterShow { get; set; }
@@ -113,39 +73,36 @@ namespace Doozy.Editor.UIManager.Editors.Containers.Internal
         protected SerializedProperty propertyAutoSelectAfterShow { get; set; }
         protected SerializedProperty propertyAutoSelectTarget { get; set; }
 
+        protected bool resetToStartValue { get; set; }
+
+        protected virtual void OnEnable()
+        {
+            if (Application.isPlaying) return;
+            resetToStartValue = false;
+            SearchForAnimators();
+            ResetAnimatorInitializedState();
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (Application.isPlaying) return;
+            if (resetToStartValue) ResetToStartValues();
+        }
+
         protected virtual void OnDestroy()
         {
+            reactionControls?.Dispose();
+
             componentHeader?.Recycle();
 
-            callbacksTabIndicator?.Recycle();
+            tabsGroup?.Recycle();
+            settingsTab?.Dispose();
+            callbacksTab?.Dispose();
+            progressorsTab?.Dispose();
 
             settingsAnimatedContainer?.Dispose();
             callbacksAnimatedContainer?.Dispose();
-
-            getCustomPositionButton?.Recycle();
-            resetCustomPositionButton?.Recycle();
-            setCustomPositionButton?.Recycle();
-
-            toggleGroup?.Recycle();
-
-            autoHideAfterShowField?.Recycle();
-            customStartPositionField?.Recycle();
-            onStartBehaviourField?.Recycle();
-            whenHiddenField?.Recycle();
-            clearSelectedField?.Recycle();
-            autoSelectAfterShowField?.Recycle();
-
-            callbacksTabButton?.Recycle();
-            settingsTabButton?.Recycle();
-
-            autoHideAfterShowSwitch?.Recycle();
-            disableCanvasWhenHiddenSwitch?.Recycle();
-            disableGameObjectWhenHiddenSwitch?.Recycle();
-            disableGraphicRaycasterWhenHiddenSwitch?.Recycle();
-            useCustomStartPositionSwitch?.Recycle();
-            clearSelectedOnHideSwitch?.Recycle();
-            clearSelectedOnShowSwitch?.Recycle();
-            autoSelectAfterShowSwitch?.Recycle();
+            progressorsAnimatedContainer?.Dispose();
         }
 
         public override VisualElement CreateInspectorGUI()
@@ -155,553 +112,648 @@ namespace Doozy.Editor.UIManager.Editors.Containers.Internal
             return root;
         }
 
+        protected virtual void ResetAnimatorInitializedState()
+        {
+            foreach (UIContainer c in castedContainers)
+                foreach (var animator in containerAnimators.RemoveNulls())
+                    if (animator.controller == c)
+                        animator.animatorInitialized = false;
+        }
+
+        protected virtual void ResetToStartValues()
+        {
+            foreach (UIContainer c in castedContainers)
+                foreach (var animator in containerAnimators.RemoveNulls())
+                    if (animator.controller == c)
+                    {
+                        animator.StopAllReactions();
+                        animator.ResetToStartValues();
+                    }
+        }
+
+        protected virtual void PlayShow()
+        {
+            foreach (UIContainer c in castedContainers)
+                foreach (var animator in containerAnimators.RemoveNulls())
+                    if (animator.controller == c)
+                        animator.Show();
+        }
+
+        protected virtual void PlayHide()
+        {
+            foreach (UIContainer c in castedContainers)
+                foreach (var animator in containerAnimators.RemoveNulls())
+                    if (animator.controller == c)
+                        animator.Hide();
+        }
+
+        protected virtual void PlayReverseShow()
+        {
+            foreach (UIContainer c in castedContainers)
+                foreach (var animator in containerAnimators.RemoveNulls())
+                    if (animator.controller == c)
+                        animator.ReverseShow();
+        }
+
+        protected virtual void PlayReverseHide()
+        {
+            foreach (UIContainer c in castedContainers)
+                foreach (var animator in containerAnimators.RemoveNulls())
+                    if (animator.controller == c)
+                        animator.ReverseHide();
+        }
+
+        protected virtual void SearchForAnimators()
+        {
+            containerAnimators ??= new List<BaseUIContainerAnimator>();
+            containerAnimators.Clear();
+            if (EditorUtility.IsPersistent(castedContainer))
+            {
+                containerAnimators.AddRange(castedContainer.GetComponentsInChildren<BaseUIContainerAnimator>());
+                return;
+            }
+            containerAnimators.AddRange(FindObjectsOfType<BaseUIContainerAnimator>());
+        }
+
+        protected virtual void HeartbeatCheck()
+        {
+            if (Application.isPlaying) return;
+
+            foreach (UIContainer c in castedContainers)
+                foreach (var a in containerAnimators.RemoveNulls())
+                    if (a.controller == c && a.animatorInitialized == false)
+                    {
+                        resetToStartValue = true;
+                        a.InitializeAnimator();
+                        foreach (EditorHeartbeat eh in a.SetHeartbeat<EditorHeartbeat>().Cast<EditorHeartbeat>())
+                            eh.StartSceneViewRefresh(a);
+                    }
+        }
+
+        protected virtual void InitializeReactionControls()
+        {
+            reactionControls
+                .SetBackgroundColor(color: EditorColors.Default.BoxBackground)
+                .AddContainerControls
+                (
+                    resetCallback: () =>
+                    {
+                        HeartbeatCheck();
+                        ResetToStartValues();
+                    },
+                    showCallback: () =>
+                    {
+                        if (Application.isPlaying)
+                        {
+                            castedContainers.ForEach(c => c.Show());
+                            return;
+                        }
+                        HeartbeatCheck();
+                        PlayShow();
+                    },
+                    hideCallback: () =>
+                    {
+                        if (Application.isPlaying)
+                        {
+                            castedContainers.ForEach(c => c.Hide());
+                            return;
+                        }
+                        HeartbeatCheck();
+                        PlayHide();
+                    },
+                    reverseShowCallback: () =>
+                    {
+                        if (Application.isPlaying) return;
+                        HeartbeatCheck();
+                        PlayReverseShow();
+                    },
+                    reverseHideCallback: () =>
+                    {
+                        if (Application.isPlaying) return;
+                        HeartbeatCheck();
+                        PlayReverseHide();
+                    },
+                    searchForAnimatorsCallback:
+                    () =>
+                    {
+                        if (Application.isPlaying) return;
+                        SearchForAnimators();
+                    });
+        }
+
         protected virtual void FindProperties()
         {
-            propertyOnStartBehaviour = serializedObject.FindProperty(nameof(UIContainer.OnStartBehaviour));
-            propertyOnShowCallback = serializedObject.FindProperty(nameof(UIContainer.OnShowCallback));
-            propertyOnVisibleCallback = serializedObject.FindProperty(nameof(UIContainer.OnVisibleCallback));
-            propertyOnHideCallback = serializedObject.FindProperty(nameof(UIContainer.OnHideCallback));
-            propertyOnHiddenCallback = serializedObject.FindProperty(nameof(UIContainer.OnHiddenCallback));
-            propertyOnVisibilityChangedCallback = serializedObject.FindProperty(nameof(UIContainer.OnVisibilityChangedCallback));
-            propertyCustomStartPosition = serializedObject.FindProperty(nameof(UIContainer.CustomStartPosition));
-            propertyUseCustomStartPosition = serializedObject.FindProperty(nameof(UIContainer.UseCustomStartPosition));
             propertyAutoHideAfterShow = serializedObject.FindProperty(nameof(UIContainer.AutoHideAfterShow));
             propertyAutoHideAfterShowDelay = serializedObject.FindProperty(nameof(UIContainer.AutoHideAfterShowDelay));
-            propertyDisableGameObjectWhenHidden = serializedObject.FindProperty(nameof(UIContainer.DisableGameObjectWhenHidden));
-            propertyDisableCanvasWhenHidden = serializedObject.FindProperty(nameof(UIContainer.DisableCanvasWhenHidden));
-            propertyDisableGraphicRaycasterWhenHidden = serializedObject.FindProperty(nameof(UIContainer.DisableGraphicRaycasterWhenHidden));
-            propertyClearSelectedOnHide = serializedObject.FindProperty(nameof(UIContainer.ClearSelectedOnHide));
-            propertyClearSelectedOnShow = serializedObject.FindProperty(nameof(UIContainer.ClearSelectedOnShow));
             propertyAutoSelectAfterShow = serializedObject.FindProperty(nameof(UIContainer.AutoSelectAfterShow));
             propertyAutoSelectTarget = serializedObject.FindProperty(nameof(UIContainer.AutoSelectTarget));
+            propertyClearSelectedOnHide = serializedObject.FindProperty(nameof(UIContainer.ClearSelectedOnHide));
+            propertyClearSelectedOnShow = serializedObject.FindProperty(nameof(UIContainer.ClearSelectedOnShow));
+            propertyCustomStartPosition = serializedObject.FindProperty(nameof(UIContainer.CustomStartPosition));
+            propertyDisableCanvasWhenHidden = serializedObject.FindProperty(nameof(UIContainer.DisableCanvasWhenHidden));
+            propertyDisableGameObjectWhenHidden = serializedObject.FindProperty(nameof(UIContainer.DisableGameObjectWhenHidden));
+            propertyDisableGraphicRaycasterWhenHidden = serializedObject.FindProperty(nameof(UIContainer.DisableGraphicRaycasterWhenHidden));
+            propertyHideProgressors = serializedObject.FindProperty("HideProgressors");
+            propertyOnHiddenCallback = serializedObject.FindProperty(nameof(UIContainer.OnHiddenCallback));
+            propertyOnHideCallback = serializedObject.FindProperty(nameof(UIContainer.OnHideCallback));
+            propertyOnShowCallback = serializedObject.FindProperty(nameof(UIContainer.OnShowCallback));
+            propertyOnStartBehaviour = serializedObject.FindProperty(nameof(UIContainer.OnStartBehaviour));
+            propertyOnVisibilityChangedCallback = serializedObject.FindProperty(nameof(UIContainer.OnVisibilityChangedCallback));
+            propertyOnVisibleCallback = serializedObject.FindProperty(nameof(UIContainer.OnVisibleCallback));
+            propertyShowHideProgressors = serializedObject.FindProperty("ShowHideProgressors");
+            propertyShowProgressors = serializedObject.FindProperty("ShowProgressors");
+            propertyUseCustomStartPosition = serializedObject.FindProperty(nameof(UIContainer.UseCustomStartPosition));
         }
 
         protected virtual void InitializeEditor()
         {
             FindProperties();
-
-            root = new VisualElement();
-
-            componentHeader =
-                FluidComponentHeader.Get()
-                    .SetAccentColor(accentColor)
-                    .SetElementSize(ElementSize.Large);
-
-            callbacksAnimatedContainer =
-                new FluidAnimatedContainer()
-                    .SetName("Callbacks")
-                    .SetClearOnHide(true)
-                    .Hide(false);
-
-            settingsAnimatedContainer =
-                new FluidAnimatedContainer()
-                    .SetName("Settings")
-                    .SetClearOnHide(false)
-                    .Show(false);
-
-            toggleGroup =
-                FluidToggleGroup.Get()
-                    .SetControlMode(FluidToggleGroup.ControlMode.OneToggleOnEnforced);
-
-            settingsTabButton =
-                DesignUtils.GetTabButtonForComponentSection(settingsIconTextures, selectableAccentColor);
-
-            settingsTabButton
-                .SetLabelText("Settings")
-                .SetOnValueChanged(evt => settingsAnimatedContainer.Toggle(evt.newValue))
-                .SetIsOn(true, false)
-                .AddToToggleGroup(toggleGroup);
-
-
+            root = DesignUtils.GetEditorRoot();
+            reactionControls = new ContainerReactionControls();
+            componentHeader = DesignUtils.editorComponentHeader.SetAccentColor(accentColor);
+            toolbarContainer = DesignUtils.editorToolbarContainer;
+            tabsGroup = FluidToggleGroup.Get().SetControlMode(FluidToggleGroup.ControlMode.OneToggleOn);
+            contentContainer = DesignUtils.editorContentContainer;
+            InitializeReactionControls();
+            InitializeSettings();
             InitializeCallbacks();
-            InitializeBehaviours();
-            InitializeAutoHideAfterShow();
-            InitializeCustomStartPosition();
-            InitializeWhenHidden();
-            InitializeSelected();
+            InitializeProgressors();
+
+            root.schedule.Execute(() => settingsTab.ButtonSetIsOn(true, false));
+
+            //refresh tabs enabled indicator
+            root.schedule.Execute(() =>
+            {
+                void UpdateIndicator(FluidTab tab, bool toggleOn, bool animateChange)
+                {
+                    if (tab == null) return;
+                    if (tab.indicator.isOn != toggleOn)
+                        tab.indicator.Toggle(toggleOn, animateChange);
+                }
+
+                //initial indicators state update (no animation)
+                UpdateIndicator(callbacksTab, castedContainer.hasCallbacks, false);
+                UpdateIndicator(progressorsTab, castedContainer.hasProgressors, false);
+
+                //subsequent indicators state update (animated)
+                root.schedule.Execute(() =>
+                {
+                    UpdateIndicator(callbacksTab, castedContainer.hasCallbacks, true);
+                    UpdateIndicator(progressorsTab, castedContainer.hasProgressors, true);
+
+                }).Every(200);
+
+            });
         }
 
-        protected virtual VisualElement GetShowHideControls()
+        protected virtual void InitializeSettings()
         {
-            if (!EditorApplication.isPlayingOrWillChangePlaymode)
-                return new VisualElement().SetStyleDisplay(DisplayStyle.None);
-
-            FluidField field = FluidField.Get();
-            VisualElement row = DesignUtils.row;
-            field.AddFieldContent(row);
-
-            var instantAnimationSwitch = FluidToggleSwitch.Get("Instant");
-
-            FluidButton GetButton() =>
-                FluidButton.Get()
+            settingsAnimatedContainer = new FluidAnimatedContainer("Settings", true).Hide(false);
+            settingsTab =
+                new FluidTab()
+                    .SetLabelText("Settings")
+                    .SetIcon(EditorSpriteSheets.EditorUI.Icons.Settings)
                     .SetElementSize(ElementSize.Small)
-                    .SetButtonStyle(ButtonStyle.Contained);
+                    .IndicatorSetEnabledColor(accentColor)
+                    .ButtonSetAccentColor(selectableAccentColor)
+                    .ButtonSetOnValueChanged(evt => settingsAnimatedContainer.Toggle(evt.newValue, evt.animateChange))
+                    .AddToToggleGroup(tabsGroup);
 
-            FluidButton showButton = GetButton()
-                .SetLabelText("Show")
-                .SetIcon(showIconTextures)
-                .SetOnClick(() =>
+            settingsAnimatedContainer.SetOnShowCallback(() =>
+            {
+                #region Start Behaviour
+
+                EnumField onStartBehaviourEnumField = DesignUtils.NewEnumField(propertyOnStartBehaviour.propertyPath).SetStyleFlexGrow(1);
+                FluidField onStartBehaviourFluidField = FluidField.Get().AddFieldContent(onStartBehaviourEnumField);
+
+                void RefreshStartBehaviourInfo(ContainerBehaviour behaviour)
                 {
-                    bool instantAnimation = instantAnimationSwitch.isOn;
+                    string info = behaviour switch
+                                  {
+                                      ContainerBehaviour.Disabled    => "Do nothing",
+                                      ContainerBehaviour.InstantHide => "Instant Hide (no animation)",
+                                      ContainerBehaviour.InstantShow => "Instant Show (no animation)",
+                                      ContainerBehaviour.Hide        => "Hide (animated)",
+                                      ContainerBehaviour.Show        => "Show (animated)",
+                                      _                              => ""
+                                  };
 
-                    if (serializedObject.isEditingMultipleObjects)
-                    {
-                        foreach (UIContainer container in uiContainers)
-                        {
-                            if (instantAnimation)
-                            {
-                                container.InstantShow();
-                                continue;
-                            }
-                            container.Show();
-                        }
-                        return;
-                    }
+                    onStartBehaviourFluidField.SetLabelText($"OnStart - {info}");
+                }
 
-                    if (instantAnimation)
-                    {
-                        uiContainer.InstantShow();
-                        return;
-                    }
-
-                    uiContainer.Show();
-
+                RefreshStartBehaviourInfo((ContainerBehaviour)propertyOnStartBehaviour.enumValueIndex);
+                onStartBehaviourEnumField.RegisterValueChangedCallback(evt =>
+                {
+                    if (evt?.newValue == null) return;
+                    RefreshStartBehaviourInfo((ContainerBehaviour)evt.newValue);
                 });
 
-            FluidButton hideButton = GetButton()
-                .SetLabelText("Hide")
-                .SetIcon(hideIconTextures)
-                .SetOnClick(() =>
-                {
-                    bool instantAnimation = instantAnimationSwitch.isOn;
+                #endregion
 
-                    if (serializedObject.isEditingMultipleObjects)
-                    {
-                        foreach (UIContainer container in uiContainers)
+                #region Auto Hide after Show
+
+                Label hideDelayLabel =
+                    DesignUtils.NewLabel("Auto Hide Delay")
+                        .SetStyleMarginRight(DesignUtils.k_Spacing);
+
+                FloatField hideDelayPropertyField =
+                    DesignUtils.NewFloatField(propertyAutoHideAfterShowDelay)
+                        .SetTooltip("Time interval after which Hide is triggered")
+                        .SetStyleWidth(40)
+                        .SetStyleMarginRight(DesignUtils.k_Spacing);
+
+                Label secondsLabel =
+                    DesignUtils.NewLabel("seconds");
+
+                hideDelayLabel.SetEnabled(propertyAutoHideAfterShow.boolValue);
+                hideDelayPropertyField.SetEnabled(propertyAutoHideAfterShow.boolValue);
+                secondsLabel.SetEnabled(propertyAutoHideAfterShow.boolValue);
+
+                FluidToggleSwitch autoHideAfterShowSwitch =
+                    FluidToggleSwitch.Get()
+                        .BindToProperty(propertyAutoHideAfterShow)
+                        .SetTooltip("If TRUE, after Show, Hide it will get automatically triggered after the AutoHideAfterShowDelay time interval has passed")
+                        .SetOnValueChanged(evt =>
                         {
-                            if (instantAnimation)
+                            if (evt?.newValue == null) return;
+                            hideDelayLabel.SetEnabled(evt.newValue);
+                            hideDelayPropertyField.SetEnabled(evt.newValue);
+                            secondsLabel.SetEnabled(evt.newValue);
+                        })
+                        .SetToggleAccentColor(selectableAccentColor)
+                        .SetStyleMarginRight(DesignUtils.k_Spacing);
+
+                FluidField autoHideAfterShowFluidField =
+                    FluidField.Get("Auto Hide after Show")
+                        .AddFieldContent
+                        (
+                            DesignUtils.row
+                                .AddChild(autoHideAfterShowSwitch)
+                                .AddChild(hideDelayLabel)
+                                .AddChild(hideDelayPropertyField)
+                                .AddChild(secondsLabel)
+                                .AddChild(DesignUtils.flexibleSpace)
+                        );
+
+                #endregion
+
+                #region Custom Start Position
+
+                PropertyField customStartPositionPropertyField =
+                    DesignUtils.NewPropertyField(propertyCustomStartPosition)
+                        .TryToHideLabel()
+                        .SetTooltip("AnchoredPosition3D to snap to on Awake")
+                        .SetStyleAlignSelf(Align.Center);
+
+                FluidToggleSwitch useCustomStartPositionSwitch =
+                    FluidToggleSwitch.Get()
+                        .BindToProperty(propertyUseCustomStartPosition)
+                        .SetToggleAccentColor(selectableAccentColor)
+                        .SetTooltip("If TRUE, this view will 'snap' to the custom start position on Awake");
+
+                FluidButton GetButton(IEnumerable<Texture2D> iconTextures, string labelText, string tooltip) =>
+                    FluidButton.Get()
+                        .SetIcon(iconTextures)
+                        .SetLabelText(labelText)
+                        .SetTooltip(tooltip)
+                        .SetElementSize(ElementSize.Tiny)
+                        .SetButtonStyle(ButtonStyle.Contained);
+
+                FluidButton getCustomPositionButton =
+                    GetButton
+                        (
+                            EditorSpriteSheets.EditorUI.Arrows.ArrowDown,
+                            "Get",
+                            "Set the current RectTransform anchoredPosition3D as the custom start position"
+                        )
+                        .SetOnClick(() =>
+                        {
+                            propertyCustomStartPosition.vector3Value = castedContainer.rectTransform.anchoredPosition3D;
+                            serializedObject.ApplyModifiedProperties();
+                        });
+
+                FluidButton setCustomPositionButton =
+                    GetButton
+                        (
+                            EditorSpriteSheets.EditorUI.Arrows.ArrowUp,
+                            "Set",
+                            "Snap the RectTransform current anchoredPosition3D to the set custom start position"
+                        )
+                        .SetOnClick(() =>
+                        {
+                            if (serializedObject.isEditingMultipleObjects)
                             {
-                                container.InstantHide();
-                                continue;
+                                // ReSharper disable once CoVariantArrayConversion
+                                Undo.RecordObjects(castedContainers.Select(ct => ct.rectTransform).ToArray(), "Set Position");
+                                foreach (UIContainer container in castedContainers)
+                                    container.rectTransform.anchoredPosition3D = container.CustomStartPosition;
+                                return;
                             }
-                            container.Hide();
-                        }
-                        return;
-                    }
 
-                    if (instantAnimation)
-                    {
-                        uiContainer.InstantHide();
-                        return;
-                    }
-                    uiContainer.Hide();
+                            Undo.RecordObject(castedContainer.rectTransform, "Set Position");
+                            castedContainer.rectTransform.anchoredPosition3D = castedContainer.CustomStartPosition;
+                        });
 
+                FluidButton resetCustomPositionButton =
+                    GetButton
+                        (
+                            EditorSpriteSheets.EditorUI.Icons.Reset,
+                            "Reset",
+                            "Reset the custom start position to (0,0,0)"
+                        )
+                        .SetOnClick(() =>
+                        {
+                            propertyCustomStartPosition.vector3Value = Vector3.zero;
+                            serializedObject.ApplyModifiedProperties();
+                        });
+
+                FluidField customStartPositionFluidField =
+                    FluidField.Get("Custom Start Position")
+                        .AddFieldContent
+                        (
+                            DesignUtils.row
+                                .SetStyleAlignItems(Align.Center)
+                                .AddChild(useCustomStartPositionSwitch)
+                                .AddChild(DesignUtils.spaceBlock)
+                                .AddChild(customStartPositionPropertyField)
+                                .AddChild(DesignUtils.spaceBlock)
+                                .AddChild(getCustomPositionButton)
+                                .AddChild(DesignUtils.spaceBlock)
+                                .AddChild(setCustomPositionButton)
+                                .AddChild(DesignUtils.spaceBlock)
+                                .AddChild(resetCustomPositionButton)
+                        );
+
+                customStartPositionPropertyField.SetEnabled(propertyUseCustomStartPosition.boolValue);
+                getCustomPositionButton.SetEnabled(propertyUseCustomStartPosition.boolValue);
+                setCustomPositionButton.SetEnabled(propertyUseCustomStartPosition.boolValue);
+                resetCustomPositionButton.SetEnabled(propertyUseCustomStartPosition.boolValue);
+
+                useCustomStartPositionSwitch.SetOnValueChanged(callback: evt =>
+                {
+                    customStartPositionPropertyField.SetEnabled(evt.newValue);
+                    getCustomPositionButton.SetEnabled(evt.newValue);
+                    setCustomPositionButton.SetEnabled(evt.newValue);
+                    resetCustomPositionButton.SetEnabled(evt.newValue);
                 });
 
-            row
-                .AddChild(showButton)
-                .AddChild(DesignUtils.spaceBlock)
-                .AddChild(hideButton)
-                .AddChild(DesignUtils.flexibleSpace)
-                .AddChild(instantAnimationSwitch);
+                #endregion
 
-            return field
-                .SetStyleMarginBottom(DesignUtils.k_Spacing);
+                #region When Hidden
+
+                FluidToggleSwitch disableGameObjectWhenHiddenSwitch =
+                    FluidToggleSwitch.Get("GameObject")
+                        .BindToProperty(propertyDisableGameObjectWhenHidden)
+                        .SetToggleAccentColor(selectableAccentColor)
+                        .SetTooltip("If TRUE, after Hide, the GameObject this component is attached to, will be disabled");
+
+                FluidToggleSwitch disableCanvasWhenHiddenSwitch =
+                    FluidToggleSwitch.Get("Canvas")
+                        .BindToProperty(propertyDisableCanvasWhenHidden)
+                        .SetToggleAccentColor(selectableAccentColor)
+                        .SetTooltip("If TRUE, after Hide, the Canvas component found on the same GameObject this component is attached to, will be disabled");
+
+                FluidToggleSwitch disableGraphicRaycasterWhenHiddenSwitch =
+                    FluidToggleSwitch.Get("GraphicRaycaster")
+                        .BindToProperty(propertyDisableGraphicRaycasterWhenHidden)
+                        .SetToggleAccentColor(selectableAccentColor)
+                        .SetTooltip("If TRUE, after Hide, the GraphicRaycaster component found on the same GameObject this component is attached to, will be disabled");
+
+                FluidField whenHiddenFluidField =
+                    FluidField.Get("When Hidden, disable")
+                        .AddFieldContent
+                        (
+                            DesignUtils.row
+                                .AddChild(disableGameObjectWhenHiddenSwitch)
+                                .AddChild(DesignUtils.spaceBlock)
+                                .AddChild(disableCanvasWhenHiddenSwitch)
+                                .AddChild(DesignUtils.spaceBlock)
+                                .AddChild(disableGraphicRaycasterWhenHiddenSwitch)
+                                .AddChild(DesignUtils.flexibleSpace)
+                        );
+
+                #endregion
+
+                #region Selected
+
+                FluidToggleSwitch clearSelectedOnShowSwitch =
+                    FluidToggleSwitch.Get()
+                        .BindToProperty(propertyClearSelectedOnShow)
+                        .SetLabelText("Show")
+                        .SetTooltip("If TRUE, when this container is shown, any GameObject that is selected by the EventSystem.current will get deselected")
+                        .SetToggleAccentColor(selectableAccentColor);
+
+                FluidToggleSwitch clearSelectedOnHideSwitch =
+                    FluidToggleSwitch.Get()
+                        .BindToProperty(propertyClearSelectedOnHide)
+                        .SetLabelText("Hide")
+                        .SetTooltip("If TRUE, when this container is hidden, any GameObject that is selected by the EventSystem.current will get deselected")
+                        .SetToggleAccentColor(selectableAccentColor);
+
+                FluidField clearSelectedFluidField =
+                    FluidField.Get()
+                        .SetLabelText("Clear Selected on")
+                        .AddFieldContent
+                        (
+                            DesignUtils.row
+                                .AddChild(clearSelectedOnShowSwitch)
+                                .AddChild(DesignUtils.spaceBlock)
+                                .AddChild(clearSelectedOnHideSwitch)
+                        )
+                        .SetStyleMinWidth(150);
+
+                FluidToggleSwitch autoSelectAfterShowSwitch =
+                    FluidToggleSwitch.Get()
+                        .BindToProperty(propertyAutoSelectAfterShow)
+                        .SetTooltip("If TRUE, after this container has been shown, the referenced selectable GameObject will get automatically selected by EventSystem.current")
+                        .SetToggleAccentColor(selectableAccentColor);
+
+                ObjectField autoSelectTargetObjectField =
+                    DesignUtils.NewObjectField(propertyAutoSelectTarget, typeof(GameObject))
+                        .SetTooltip("Reference to the GameObject that should be selected after this view has been shown. Works only if AutoSelectAfterShow is TRUE");
+
+                autoSelectTargetObjectField.SetEnabled(propertyAutoSelectAfterShow.boolValue);
+                autoSelectAfterShowSwitch.SetOnValueChanged(evt =>
+                {
+                    if (evt?.newValue == null) return;
+                    autoSelectTargetObjectField.SetEnabled(evt.newValue);
+                });
+
+                FluidField autoSelectAfterShowFluidField =
+                    FluidField.Get()
+                        .SetLabelText("Auto select GameObject after Show")
+                        .AddFieldContent
+                        (
+                            DesignUtils.row
+                                .AddChild(autoSelectAfterShowSwitch)
+                                .AddChild(DesignUtils.spaceBlock)
+                                .AddChild(autoSelectTargetObjectField)
+                        );
+
+                #endregion
+
+                settingsAnimatedContainer
+                    .AddContent
+                    (
+                        DesignUtils.row
+                            .AddChild(onStartBehaviourFluidField)
+                            .AddChild(DesignUtils.spaceBlock)
+                            .AddChild(autoHideAfterShowFluidField)
+                    )
+                    .AddContent(DesignUtils.spaceBlock)
+                    .AddContent(customStartPositionFluidField)
+                    .AddContent(DesignUtils.spaceBlock)
+                    .AddContent(whenHiddenFluidField)
+                    .AddContent(DesignUtils.spaceBlock)
+                    .AddContent
+                    (
+                        DesignUtils.row
+                            .AddChild(clearSelectedFluidField)
+                            .AddChild(DesignUtils.spaceBlock)
+                            .AddChild(autoSelectAfterShowFluidField)
+                    )
+                    .AddContent(DesignUtils.endOfLineBlock)
+                    .Bind(serializedObject);
+
+            });
         }
 
         protected virtual void InitializeCallbacks()
         {
-            (callbacksTabButton, callbacksTabIndicator, callbacksTab) =
-                DesignUtils.GetTabButtonForComponentSectionWithEnabledIndicator(unityIconTextures, DesignUtils.callbackSelectableColor, DesignUtils.callbacksColor);
+            callbacksAnimatedContainer = new FluidAnimatedContainer("Callbacks", true).Hide(false);
+            callbacksTab =
+                new FluidTab()
+                    .SetLabelText("Callbacks")
+                    .SetIcon(EditorSpriteSheets.EditorUI.Icons.UnityEvent)
+                    .SetElementSize(ElementSize.Small)
+                    .IndicatorSetEnabledColor(DesignUtils.callbacksColor)
+                    .ButtonSetAccentColor(DesignUtils.callbackSelectableColor)
+                    .ButtonSetOnValueChanged(evt => callbacksAnimatedContainer.Toggle(evt.newValue, evt.animateChange))
+                    .AddToToggleGroup(tabsGroup);
 
             callbacksAnimatedContainer.SetOnShowCallback(() =>
             {
-                callbacksAnimatedContainer.fluidContainer
-                    .AddChild
+                FluidField GetCallbackField(string labelText, SerializedProperty property) =>
+                    FluidField.Get()
+                        .SetLabelText(labelText)
+                        .SetElementSize(ElementSize.Large)
+                        .AddFieldContent(DesignUtils.NewPropertyField(property));
+
+                callbacksAnimatedContainer
+                    .AddContent(GetCallbackField("Show animation started", propertyOnShowCallback))
+                    .AddContent(DesignUtils.spaceBlock)
+                    .AddContent(GetCallbackField("Show animation finished - VISIBLE", propertyOnVisibleCallback))
+                    .AddContent(DesignUtils.spaceBlock2X)
+                    .AddContent(GetCallbackField("Hide animation started", propertyOnHideCallback))
+                    .AddContent(DesignUtils.spaceBlock)
+                    .AddContent(GetCallbackField("Hide animation finished - HIDDEN", propertyOnHiddenCallback))
+                    .AddContent(DesignUtils.spaceBlock2X)
+                    .AddContent
                     (
                         FluidField.Get()
                             .SetElementSize(ElementSize.Large)
-                            .SetIcon(EditorMicroAnimations.EditorUI.Icons.Show)
-                            .SetLabelText("Show animation started")
-                            .AddFieldContent(DesignUtils.NewPropertyField(propertyOnShowCallback))
+                            .AddFieldContent(DesignUtils.UnityEventField("Visibility changed", propertyOnVisibilityChangedCallback))
                     )
+                    .Bind(serializedObject);
+            });
+
+
+        }
+
+        protected virtual void InitializeProgressors()
+        {
+            progressorsAnimatedContainer = new FluidAnimatedContainer("Progressors", true).Hide(false);
+            progressorsTab =
+                new FluidTab()
+                    .SetLabelText("Progressors")
+                    .SetIcon(EditorSpriteSheets.Reactor.Icons.Progressor)
+                    .SetElementSize(ElementSize.Small)
+                    .IndicatorSetEnabledColor(EditorColors.Reactor.Red)
+                    .ButtonSetAccentColor(EditorSelectableColors.Reactor.Red)
+                    .ButtonSetOnValueChanged(evt => progressorsAnimatedContainer.Toggle(evt.newValue, evt.animateChange))
+                    .AddToToggleGroup(tabsGroup);
+
+            progressorsAnimatedContainer.SetOnShowCallback(() =>
+            {
+                FluidListView GetProgressorsListView(SerializedProperty arrayProperty, string listTitle, string listDescription) =>
+                    DesignUtils.GetObjectListView(arrayProperty, listTitle, listDescription, typeof(Progressor));
+
+                progressorsAnimatedContainer
+                    .AddContent
+                    (
+                        GetProgressorsListView
+                        (
+                            propertyShowProgressors,
+                            "Show Progressors",
+                            "Progressors triggered on Show. Plays forward on Show."
+                        )
+                    )
+                    .AddContent(DesignUtils.spaceBlock4X)
+                    .AddContent
+                    (
+                        GetProgressorsListView
+                        (
+                            propertyHideProgressors,
+                            "Hide Progressors",
+                            "Progressors triggered on Hide. Plays forward on Hide."
+                        )
+                    )
+                    .AddContent(DesignUtils.spaceBlock4X)
+                    .AddContent
+                    (
+                        GetProgressorsListView
+                        (
+                            propertyShowHideProgressors,
+                            "Show/Hide Progressors",
+                            "Progressors triggered on both Show and Hide. Plays forward on Show and in reverse on Hide."
+                        )
+                    );
+
+                progressorsAnimatedContainer.Bind(serializedObject);
+            });
+        }
+
+        protected virtual VisualElement Toolbar()
+        {
+            return
+                toolbarContainer
+                    .AddChild(settingsTab)
                     .AddChild(DesignUtils.spaceBlock)
-                    .AddChild
-                    (
-                        FluidField.Get()
-                            .SetElementSize(ElementSize.Large)
-                            .SetIcon(EditorMicroAnimations.EditorUI.Icons.Show)
-                            .SetLabelText("Visible - Show animation finished")
-                            .AddFieldContent(DesignUtils.NewPropertyField(propertyOnVisibleCallback))
-                    )
+                    .AddChild(callbacksTab)
+                    .AddChild(DesignUtils.spaceBlock)
+                    .AddChild(progressorsTab)
+                    .AddChild(DesignUtils.spaceBlock)
+                    .AddChild(DesignUtils.flexibleSpace)
                     .AddChild(DesignUtils.spaceBlock2X)
                     .AddChild
                     (
-                        FluidField.Get()
-                            .SetElementSize(ElementSize.Large)
-                            .SetIcon(EditorMicroAnimations.EditorUI.Icons.Hide)
-                            .SetLabelText("Hide animation started")
-                            .AddFieldContent(DesignUtils.NewPropertyField(propertyOnHideCallback))
-                    )
-                    .AddChild(DesignUtils.spaceBlock)
-                    .AddChild
-                    (
-                        FluidField.Get()
-                            .SetElementSize(ElementSize.Large)
-                            .SetIcon(EditorMicroAnimations.EditorUI.Icons.Hide)
-                            .SetLabelText("Hidden - Hide animation finished")
-                            .AddFieldContent(DesignUtils.NewPropertyField(propertyOnHiddenCallback))
-                    )
-                    .AddChild(DesignUtils.spaceBlock2X)
-                    .AddChild
-                    (
-                        FluidField.Get()
-                            .SetElementSize(ElementSize.Large)
-                            .SetIcon(EditorMicroAnimations.EditorUI.Icons.VisibilityChanged)
-                            .SetLabelText("Visibility changed")
-                            .AddFieldContent(DesignUtils.NewPropertyField(propertyOnVisibilityChangedCallback))
-                    )
-                    .AddChild(DesignUtils.endOfLineBlock);
-
-                callbacksAnimatedContainer.Bind(serializedObject);
-            });
-
-            callbacksTabIndicator.Toggle(hasCallbacks, false);
-
-            bool previousHasCallbacks = !hasCallbacks;
-            IVisualElementScheduledItem callbacksScheduler =
-                callbacksTabButton.schedule.Execute(() =>
-                {
-                    if (previousHasCallbacks == hasCallbacks) return;
-                    callbacksTabIndicator.Toggle(hasCallbacks, true);
-                    previousHasCallbacks = hasCallbacks;
-                }).Every(250);
-
-            callbacksScheduler.Pause();
-
-            callbacksTabButton
-                .SetLabelText("Callbacks")
-                .SetOnValueChanged(evt =>
-                {
-                    callbacksAnimatedContainer.Toggle(evt.newValue);
-                    callbacksTabIndicator.Toggle(hasCallbacks, true);
-                    if (evt.newValue)
-                        callbacksScheduler.Resume();
-                    else
-                        callbacksScheduler.Pause();
-                })
-                .AddToToggleGroup(toggleGroup);
-        }
-
-        protected virtual void InitializeBehaviours()
-        {
-            EnumField onStartBehaviourEnumField = DesignUtils.NewEnumField(propertyOnStartBehaviour.propertyPath).SetStyleFlexGrow(1);
-            onStartBehaviourEnumField.SetTooltip(GetContainerBehaviourTooltip((ContainerBehaviour)propertyOnStartBehaviour.enumValueIndex));
-            onStartBehaviourEnumField.RegisterValueChangedCallback(evt =>
-            {
-                if (evt?.newValue == null) return;
-                onStartBehaviourEnumField.SetTooltip(GetContainerBehaviourTooltip((ContainerBehaviour)evt.newValue));
-            });
-            onStartBehaviourField = FluidField.Get("OnStart Behaviour").AddFieldContent(onStartBehaviourEnumField);
-            onStartBehaviourField.fieldContent.SetStyleFlexGrow(0);
-
-            string GetContainerBehaviourTooltip(ContainerBehaviour behaviour)
-            {
-                switch (behaviour)
-                {
-                    case ContainerBehaviour.Disabled: return "Do nothing";
-                    case ContainerBehaviour.InstantHide: return "Instant Hide (no animation)";
-                    case ContainerBehaviour.InstantShow: return "Instant Show (no animation)";
-                    case ContainerBehaviour.Hide: return "Hide (animated)";
-                    case ContainerBehaviour.Show: return "Show (animated)";
-                    default: throw new ArgumentOutOfRangeException(nameof(behaviour), behaviour, null);
-                }
-            }
-        }
-
-        protected virtual void InitializeAutoHideAfterShow()
-        {
-            Label hideDelayLabel =
-                DesignUtils.NewLabel("Auto Hide Delay")
-                    .SetStyleMarginRight(DesignUtils.k_Spacing);
-
-            FloatField hideDelayPropertyField =
-                DesignUtils.NewFloatField(propertyAutoHideAfterShowDelay)
-                    .SetTooltip("Time interval after which Hide is triggered")
-                    .SetStyleWidth(40)
-                    .SetStyleMarginRight(DesignUtils.k_Spacing);
-
-            Label secondsLabel = DesignUtils.NewLabel("seconds");
-
-            hideDelayLabel.SetEnabled(propertyAutoHideAfterShow.boolValue);
-            hideDelayPropertyField.SetEnabled(propertyAutoHideAfterShow.boolValue);
-            secondsLabel.SetEnabled(propertyAutoHideAfterShow.boolValue);
-
-            autoHideAfterShowSwitch =
-                FluidToggleSwitch.Get()
-                    .BindToProperty(propertyAutoHideAfterShow)
-                    .SetTooltip("If TRUE, after Show, Hide it will get automatically triggered after the AutoHideAfterShowDelay time interval has passed")
-                    .SetOnValueChanged(evt =>
-                    {
-                        if (evt?.newValue == null) return;
-                        hideDelayLabel.SetEnabled(evt.newValue);
-                        hideDelayPropertyField.SetEnabled(evt.newValue);
-                        secondsLabel.SetEnabled(evt.newValue);
-
-                    })
-                    .SetToggleAccentColor(selectableAccentColor)
-                    .SetStyleMarginRight(DesignUtils.k_Spacing);
-
-            autoHideAfterShowField =
-                FluidField.Get("Auto Hide after Show")
-                    .AddFieldContent
-                    (
-                        DesignUtils.row
-                            .AddChild(autoHideAfterShowSwitch)
-                            .AddChild(hideDelayLabel)
-                            .AddChild(hideDelayPropertyField)
-                            .AddChild(secondsLabel)
-                            .AddChild(DesignUtils.flexibleSpace)
+                        DesignUtils.SystemButton_SortComponents
+                        (
+                            castedContainer.gameObject,
+                            nameof(RectTransform),
+                            nameof(UIContainer)
+                        )
                     );
         }
 
-        protected virtual void InitializeCustomStartPosition()
+        protected virtual VisualElement Content()
         {
-            PropertyField customStartPositionPropertyField =
-                DesignUtils.NewPropertyField(propertyCustomStartPosition)
-                    .TryToHideLabel()
-                    .SetTooltip("AnchoredPosition3D to snap to on Awake")
-                    .SetStyleAlignSelf(Align.Center);
-
-            useCustomStartPositionSwitch =
-                FluidToggleSwitch.Get()
-                    .SetToggleAccentColor(selectableAccentColor)
-                    .BindToProperty(propertyUseCustomStartPosition)
-                    .SetTooltip("If TRUE, this view will 'snap' to the custom start position on Awake");
-
-            FluidButton GetButton(IEnumerable<Texture2D> iconTextures, string labelText, string tooltip) =>
-                FluidButton.Get()
-                    .SetIcon(iconTextures)
-                    .SetLabelText(labelText)
-                    .SetTooltip(tooltip)
-                    .SetElementSize(ElementSize.Tiny)
-                    .SetButtonStyle(ButtonStyle.Contained);
-
-            getCustomPositionButton =
-                GetButton(arrowDownIconTextures, "Get", "Set the current RectTransform anchoredPosition3D as the custom start position")
-                    .SetOnClick(() =>
-                    {
-                        propertyCustomStartPosition.vector3Value = uiContainer.rectTransform.anchoredPosition3D;
-                        serializedObject.ApplyModifiedProperties();
-                    });
-
-            setCustomPositionButton =
-                GetButton(arrowUpIconTextures, "Set", "Snap the RectTransform current anchoredPosition3D to the set custom start position")
-                    .SetOnClick(() =>
-                    {
-                        if (serializedObject.isEditingMultipleObjects)
-                        {
-                            // ReSharper disable once CoVariantArrayConversion
-                            Undo.RecordObjects(uiContainers.Select(ct => ct.rectTransform).ToArray(), "Set Position");
-                            foreach (UIContainer container in uiContainers)
-                                container.rectTransform.anchoredPosition3D = container.CustomStartPosition;
-                            return;
-                        }
-
-                        Undo.RecordObject(uiContainer.rectTransform, "Set Position");
-                        uiContainer.rectTransform.anchoredPosition3D = uiContainer.CustomStartPosition;
-                    });
-
-            resetCustomPositionButton =
-                GetButton(resetIconTextures, "Reset", "Reset the custom start position to (0,0,0)")
-                    .SetOnClick(() =>
-                    {
-                        propertyCustomStartPosition.vector3Value = Vector3.zero;
-                        serializedObject.ApplyModifiedProperties();
-                    });
-
-            customStartPositionField =
-                FluidField.Get("Custom Start Position")
-                    .AddFieldContent
-                    (
-                        DesignUtils.row.SetStyleAlignItems(Align.Center)
-                            .AddChild(useCustomStartPositionSwitch)
-                            .AddChild(DesignUtils.spaceBlock)
-                            .AddChild(customStartPositionPropertyField)
-                            .AddChild(DesignUtils.spaceBlock)
-                            .AddChild(getCustomPositionButton)
-                            .AddChild(DesignUtils.spaceBlock)
-                            .AddChild(setCustomPositionButton)
-                            .AddChild(DesignUtils.spaceBlock)
-                            .AddChild(resetCustomPositionButton)
-                    );
-
-            customStartPositionPropertyField.SetEnabled(propertyUseCustomStartPosition.boolValue);
-            getCustomPositionButton.SetEnabled(propertyUseCustomStartPosition.boolValue);
-            setCustomPositionButton.SetEnabled(propertyUseCustomStartPosition.boolValue);
-            resetCustomPositionButton.SetEnabled(propertyUseCustomStartPosition.boolValue);
-
-            useCustomStartPositionSwitch.SetOnValueChanged(callback: evt =>
-            {
-                customStartPositionPropertyField.SetEnabled(evt.newValue);
-                getCustomPositionButton.SetEnabled(evt.newValue);
-                setCustomPositionButton.SetEnabled(evt.newValue);
-                resetCustomPositionButton.SetEnabled(evt.newValue);
-            });
-        }
-
-        protected virtual void InitializeWhenHidden()
-        {
-
-            disableGameObjectWhenHiddenSwitch =
-                FluidToggleSwitch.Get("GameObject")
-                    .BindToProperty(propertyDisableGameObjectWhenHidden)
-                    .SetToggleAccentColor(selectableAccentColor)
-                    .SetTooltip("If TRUE, after Hide, the GameObject this component is attached to, will be disabled");
-
-            disableCanvasWhenHiddenSwitch =
-                FluidToggleSwitch.Get("Canvas")
-                    .BindToProperty(propertyDisableCanvasWhenHidden)
-                    .SetToggleAccentColor(selectableAccentColor)
-                    .SetTooltip("If TRUE, after Hide, the Canvas component found on the same GameObject this component is attached to, will be disabled");
-
-            disableGraphicRaycasterWhenHiddenSwitch =
-                FluidToggleSwitch.Get("GraphicRaycaster")
-                    .BindToProperty(propertyDisableGraphicRaycasterWhenHidden)
-                    .SetToggleAccentColor(selectableAccentColor)
-                    .SetTooltip("If TRUE, after Hide, the GraphicRaycaster component found on the same GameObject this component is attached to, will be disabled");
-
-            whenHiddenField = FluidField.Get("When Hidden, disable")
-                .AddFieldContent
-                (
-                    DesignUtils.row
-                        .AddChild(disableGameObjectWhenHiddenSwitch)
-                        .AddChild(DesignUtils.spaceBlock)
-                        .AddChild(disableCanvasWhenHiddenSwitch)
-                        .AddChild(DesignUtils.spaceBlock)
-                        .AddChild(disableGraphicRaycasterWhenHiddenSwitch)
-                        .AddChild(DesignUtils.flexibleSpace)
-                );
-        }
-
-        protected virtual void InitializeSelected()
-        {
-            clearSelectedOnShowSwitch =
-                FluidToggleSwitch.Get()
-                    .SetLabelText("Show")
-                    .SetTooltip("If TRUE, when this container is shown, any GameObject that is selected by the EventSystem.current will get deselected")
-                    .BindToProperty(propertyClearSelectedOnShow)
-                    .SetToggleAccentColor(selectableAccentColor);
-
-            clearSelectedOnHideSwitch =
-                FluidToggleSwitch.Get()
-                    .SetLabelText("Hide")
-                    .SetTooltip("If TRUE, when this container is hidden, any GameObject that is selected by the EventSystem.current will get deselected")
-                    .BindToProperty(propertyClearSelectedOnHide)
-                    .SetToggleAccentColor(selectableAccentColor);
-
-            clearSelectedField =
-                FluidField.Get()
-                    .SetLabelText("Clear Selected on")
-                    .AddFieldContent
-                    (
-                        DesignUtils.row
-                            .AddChild(clearSelectedOnShowSwitch)
-                            .AddChild(DesignUtils.spaceBlock)
-                            .AddChild(clearSelectedOnHideSwitch)
-                    )
-                    .SetStyleMinWidth(150);
-
-
-            autoSelectAfterShowSwitch =
-                FluidToggleSwitch.Get()
-                    .SetTooltip("If TRUE, after this container has been shown, the referenced selectable GameObject will get automatically selected by EventSystem.current")
-                    .BindToProperty(propertyAutoSelectAfterShow)
-                    .SetToggleAccentColor(selectableAccentColor);
-
-            autoSelectTargetObjectField =
-                DesignUtils.NewObjectField(propertyAutoSelectTarget, typeof(GameObject))
-                    .SetTooltip("Reference to the GameObject that should be selected after this view has been shown. Works only if AutoSelectAfterShow is TRUE");
-
-            autoSelectTargetObjectField.SetEnabled(propertyAutoSelectAfterShow.boolValue);
-            autoSelectAfterShowSwitch.SetOnValueChanged(evt =>
-            {
-                if (evt?.newValue == null) return;
-                autoSelectTargetObjectField.SetEnabled(evt.newValue);
-            });
-
-            autoSelectAfterShowField =
-                FluidField.Get()
-                    .SetLabelText("Auto select GameObject after Show")
-                    .AddFieldContent
-                    (
-                        DesignUtils.row
-                            .AddChild(autoSelectAfterShowSwitch)
-                            .AddChild(DesignUtils.spaceBlock)
-                            .AddChild(autoSelectTargetObjectField)
-                    );
+            return
+                contentContainer
+                    .AddChild(settingsAnimatedContainer)
+                    .AddChild(callbacksAnimatedContainer)
+                    .AddChild(progressorsAnimatedContainer);
         }
 
         protected virtual void Compose()
         {
             root
+                .AddChild(reactionControls)
                 .AddChild(componentHeader)
-                .AddChild
-                (
-                    DesignUtils.row
-                        .SetStyleMargins(50, -4, DesignUtils.k_Spacing2X, DesignUtils.k_Spacing2X)
-                        .AddChild(settingsTabButton)
-                        .AddChild(DesignUtils.spaceBlock2X)
-                        .AddChild(callbacksTab)
-                        .AddChild(DesignUtils.spaceBlock2X)
-                        .AddChild(DesignUtils.flexibleSpace)
-                        .AddChild(DesignUtils.spaceBlock2X)
-                        .AddChild
-                        (
-                            DesignUtils.SystemButton_SortComponents
-                            (
-                                uiContainer.gameObject,
-                                nameof(RectTransform),
-                                nameof(Canvas),
-                                nameof(CanvasGroup),
-                                nameof(GraphicRaycaster),
-                                nameof(UIContainer)
-                            )
-                        )
-                )
-                .AddChild(DesignUtils.spaceBlock)
-                .AddChild(GetShowHideControls())
-                .AddChild(callbacksAnimatedContainer)
-                .AddChild
-                (
-                    settingsAnimatedContainer
-                        .AddContent
-                        (
-                            DesignUtils.column
-                                .AddChild
-                                (
-                                    DesignUtils.row
-                                        .AddChild(onStartBehaviourField)
-                                        .AddChild(DesignUtils.spaceBlock)
-                                        .AddChild(autoHideAfterShowField)
-                                )
-                                .AddChild(DesignUtils.spaceBlock)
-                                .AddChild(customStartPositionField)
-                                .AddChild(DesignUtils.spaceBlock)
-                                .AddChild(whenHiddenField)
-                                .AddChild(DesignUtils.spaceBlock)
-                                .AddChild
-                                (
-                                    DesignUtils.row
-                                        .AddChild(clearSelectedField)
-                                        .AddChild(DesignUtils.spaceBlock)
-                                        .AddChild(autoSelectAfterShowField)
-                                )
-                                .AddChild(DesignUtils.spaceBlock)
-                        )
-                )
-                .AddChild(DesignUtils.endOfLineBlock)
-                ;
+                .AddChild(Toolbar())
+                .AddChild(DesignUtils.spaceBlock2X)
+                .AddChild(Content())
+                .AddChild(DesignUtils.endOfLineBlock);
         }
     }
 }

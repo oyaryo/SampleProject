@@ -1,4 +1,4 @@
-// Copyright (c) 2015 - 2022 Doozy Entertainment. All Rights Reserved.
+// Copyright (c) 2015 - 2021 Doozy Entertainment. All Rights Reserved.
 // This code can only be used under the standard Unity Asset Store End User License Agreement
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
@@ -49,7 +49,11 @@ namespace Doozy.Editor.Nody
         {
             var tree = new List<SearchTreeEntry>()
             {
-                new SearchTreeGroupEntry(new GUIContent("Create Node", EditorTextures.Nody.Icons.Infinity)),
+                new SearchTreeGroupEntry(new GUIContent("Create Node", EditorTextures.Nody.Icons.Infinity), 0),
+                new SearchTreeGroupEntry(new GUIContent("Scene Management"), 1),
+                new SearchTreeEntry(new GUIContent("Activate Loaded Scenes", transparentIcon)) { userData = new NodeTypeInfo(typeof(Doozy.Runtime.SceneManagement.Nodes.ActivateLoadedScenesNode)), level = 2 },
+                new SearchTreeEntry(new GUIContent("Load Scene", transparentIcon)) { userData = new NodeTypeInfo(typeof(Doozy.Runtime.SceneManagement.Nodes.LoadSceneNode)), level = 2 },
+                new SearchTreeEntry(new GUIContent("Unload Scene", transparentIcon)) { userData = new NodeTypeInfo(typeof(Doozy.Runtime.SceneManagement.Nodes.UnloadSceneNode)), level = 2 },
                 new SearchTreeGroupEntry(new GUIContent("System"), 1),
                 new SearchTreeEntry(new GUIContent("Application Quit", transparentIcon)) { userData = new NodeTypeInfo(typeof(Doozy.Runtime.Nody.Nodes.ApplicationQuitNode)), level = 2 },
                 new SearchTreeGroupEntry(new GUIContent("Time"), 1),
@@ -73,6 +77,9 @@ namespace Doozy.Editor.Nody
             if (!(searchTreeEntry.userData is NodeTypeInfo nodeInfo))
                 return false;
             
+            if(nodeInfo.type == typeof(Doozy.Runtime.SceneManagement.Nodes.ActivateLoadedScenesNode)) { graphView.CreateNode(typeof(Doozy.Runtime.SceneManagement.Nodes.ActivateLoadedScenesNode), true); return true;}
+            if(nodeInfo.type == typeof(Doozy.Runtime.SceneManagement.Nodes.LoadSceneNode)) { graphView.CreateNode(typeof(Doozy.Runtime.SceneManagement.Nodes.LoadSceneNode), true); return true;}
+            if(nodeInfo.type == typeof(Doozy.Runtime.SceneManagement.Nodes.UnloadSceneNode)) { graphView.CreateNode(typeof(Doozy.Runtime.SceneManagement.Nodes.UnloadSceneNode), true); return true;}
             if(nodeInfo.type == typeof(Doozy.Runtime.Nody.Nodes.ApplicationQuitNode)) { graphView.CreateNode(typeof(Doozy.Runtime.Nody.Nodes.ApplicationQuitNode), true); return true;}
             if(nodeInfo.type == typeof(Doozy.Runtime.Nody.Nodes.TimeScaleNode)) { graphView.CreateNode(typeof(Doozy.Runtime.Nody.Nodes.TimeScaleNode), true); return true;}
             if(nodeInfo.type == typeof(Doozy.Runtime.UIManager.Nodes.BackButtonNode)) { graphView.CreateNode(typeof(Doozy.Runtime.UIManager.Nodes.BackButtonNode), true); return true;}

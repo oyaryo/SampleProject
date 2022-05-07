@@ -4,7 +4,9 @@
 
 using Doozy.Editor.Common.Automation.Generators;
 using Doozy.Editor.Common.Utils;
+using Doozy.Editor.EditorUI;
 using Doozy.Editor.EditorUI.ScriptableObjects;
+using Doozy.Editor.EditorUI.ScriptableObjects.Colors;
 using Doozy.Editor.Signals;
 using Doozy.Editor.Signals.ScriptableObjects;
 using Doozy.Editor.UIManager.ScriptableObjects;
@@ -12,8 +14,6 @@ using Doozy.Editor.UIManager.UIMenu;
 using Doozy.Runtime.Reactor.ScriptableObjects;
 using Doozy.Runtime.UIManager.ScriptableObjects;
 using UnityEditor;
-using UnityEditor.Experimental;
-using UnityEditorInternal;
 using UnityEngine;
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -21,7 +21,7 @@ namespace Doozy.Editor.Common.ScriptableObjects
 {
     public class UpdateBot : SingletonEditorScriptableObject<UpdateBot>
     {
-        public bool Update = true;
+        public bool Update = false;
 
         [InitializeOnLoadMethod]
         public static void Initialize()
@@ -35,7 +35,7 @@ namespace Doozy.Editor.Common.ScriptableObjects
             }
             Run();
             instance.Update = false;
-            Save();
+            EditorUtility.SetDirty(instance);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }

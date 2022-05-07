@@ -56,12 +56,12 @@ namespace Doozy.Editor.Mody.Components
 
         public ModyActionStateIndicator()
         {
-            onStartIndicator = GetIndicator(EditorMicroAnimations.EditorUI.Icons.EventsOnStart).SetEnabledColor(runningColor).SetSize(22);
-            onFinishIndicator = GetIndicator(EditorMicroAnimations.EditorUI.Icons.EventsOnFinish).SetEnabledColor(runningColor).SetSize(22);
+            onStartIndicator = GetIndicator(EditorSpriteSheets.EditorUI.Icons.EventsOnStart).SetEnabledColor(runningColor).SetSize(22);
+            onFinishIndicator = GetIndicator(EditorSpriteSheets.EditorUI.Icons.EventsOnFinish).SetEnabledColor(runningColor).SetSize(22);
 
-            startDelayIndicator = GetIndicator(EditorMicroAnimations.EditorUI.Icons.StartDelay).SetEnabledColor(startDelayColor).IconIsLooping(true);
-            runningIndicator = GetIndicator(EditorMicroAnimations.EditorUI.Icons.Duration).SetEnabledColor(runningColor).IconIsLooping(true);
-            cooldownIndicator = GetIndicator(EditorMicroAnimations.EditorUI.Icons.Cooldown).SetEnabledColor(cooldownColor).IconIsLooping(true);
+            startDelayIndicator = GetIndicator(EditorSpriteSheets.EditorUI.Icons.StartDelay).SetEnabledColor(startDelayColor).IconIsLooping(true);
+            runningIndicator = GetIndicator(EditorSpriteSheets.EditorUI.Icons.Duration).SetEnabledColor(runningColor).IconIsLooping(true);
+            cooldownIndicator = GetIndicator(EditorSpriteSheets.EditorUI.Icons.Cooldown).SetEnabledColor(cooldownColor).IconIsLooping(true);
 
             startDelayProgressBar = FluidProgressBar.Get().SetIndicatorColor(startDelayColor);
             runningProgressBar = FluidProgressBar.Get().SetIndicatorColor(runningColor);
@@ -121,8 +121,8 @@ namespace Doozy.Editor.Mody.Components
             }
 
             bool hasStartDelay = action.startDelay > 0;
-            bool hasOnStart = action.onStartEvents != null && action.onStartEvents.Enabled;
-            bool hasOnFinish = action.onFinishEvents != null && action.onFinishEvents.Enabled;
+            bool hasOnStart = action.onStartEvents != null;
+            bool hasOnFinish = action.onFinishEvents != null;
             bool hasCooldown = action.cooldown > 0;
             bool instantAction = action.duration == 0;
 

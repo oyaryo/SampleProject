@@ -5,6 +5,7 @@
 using System;
 using Doozy.Editor.EditorUI.Windows.Internal;
 using Doozy.Editor.Signals.Layouts;
+using Doozy.Editor.UIElements;
 using Doozy.Runtime.UIElements.Extensions;
 using UnityEditor;
 using UnityEngine;
@@ -25,12 +26,17 @@ namespace Doozy.Editor.Signals.Windows
         }
         
         protected override void CreateGUI() =>
-            root.AddChild(windowLayout = Activator.CreateInstance<SignalsConsoleWindowLayout>());
+            root
+                .RecycleAndClear()
+                .AddChild(windowLayout = Activator.CreateInstance<SignalsConsoleWindowLayout>());
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            ((SignalsConsoleWindowLayout)windowLayout)?.OnDestroy();
+            var layout = (SignalsConsoleWindowLayout)windowLayout;
+            if (layout == null) return;
+            layout.OnDestroy();
+            layout.Dispose();
         }
     }
 }

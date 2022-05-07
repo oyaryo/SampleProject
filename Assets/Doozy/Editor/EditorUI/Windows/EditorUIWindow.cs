@@ -10,9 +10,11 @@ using Doozy.Editor.EditorUI.ScriptableObjects.Colors;
 using Doozy.Editor.EditorUI.ScriptableObjects.Fonts;
 using Doozy.Editor.EditorUI.ScriptableObjects.Layouts;
 using Doozy.Editor.EditorUI.ScriptableObjects.MicroAnimations;
+using Doozy.Editor.EditorUI.ScriptableObjects.SpriteSheets;
 using Doozy.Editor.EditorUI.ScriptableObjects.Styles;
 using Doozy.Editor.EditorUI.ScriptableObjects.Textures;
 using Doozy.Editor.EditorUI.Windows.Internal;
+using Doozy.Editor.UIElements;
 using Doozy.Runtime.UIElements.Extensions;
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -30,16 +32,14 @@ namespace Doozy.Editor.EditorUI.Windows
         [MenuItem(k_WindowMenuPath + "Refresh", priority = -450)]
         public static void Refresh()
         {
-            EditorDataLayoutDatabase.instance.RefreshDatabase();
-            EditorDataStyleDatabase.instance.RefreshDatabase();
-            
             EditorDataColorDatabase.instance.RefreshDatabase();
-            EditorDataSelectableColorDatabase.instance.RefreshDatabase();
-            
             EditorDataFontDatabase.instance.RefreshDatabase();
-            
-            EditorDataTextureDatabase.instance.RefreshDatabase();
+            EditorDataLayoutDatabase.instance.RefreshDatabase();
             EditorDataMicroAnimationDatabase.instance.RefreshDatabase();
+            EditorDataSelectableColorDatabase.instance.RefreshDatabase();
+            EditorDataSpriteSheetDatabase.instance.RefreshDatabase();
+            EditorDataStyleDatabase.instance.RefreshDatabase();
+            EditorDataTextureDatabase.instance.RefreshDatabase();
         }
 
         public static EditorSelectableColorInfo buttonAccentColor => EditorSelectableColors.EditorUI.Amber;
@@ -53,7 +53,9 @@ namespace Doozy.Editor.EditorUI.Windows
 
         protected override void CreateGUI()
         {
-            root.Add(templateContainer = EditorLayouts.EditorUI.EditorUIWindow.CloneTree());
+            root
+                .RecycleAndClear()
+                .Add(templateContainer = EditorLayouts.EditorUI.EditorUIWindow.CloneTree());
 
             templateContainer
                 .SetStyleFlexGrow(1)

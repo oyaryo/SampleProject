@@ -15,7 +15,10 @@ MonoBehaviour:
   GroupCategory: EditorUI
   GroupName: Icons
   RemovePrefixFromTextureName: Icon
+  IgnoreTextureSettings: 0
   Textures:
+  - TextureName: API
+    TextureReference: {fileID: 2800000, guid: 99c69f7826387a24ab7e493946e355b0, type: 3}
   - TextureName: ButtonClick
     TextureReference: {fileID: 2800000, guid: e8a098f373b325548967f6bc806d331e, type: 3}
   - TextureName: ButtonDoubleClick
@@ -28,6 +31,8 @@ MonoBehaviour:
     TextureReference: {fileID: 2800000, guid: 853f35117da969c4bb69415d3b194035, type: 3}
   - TextureName: ButtonRightClick
     TextureReference: {fileID: 2800000, guid: aab8025c645b7914b901b6e8af8360a2, type: 3}
+  - TextureName: Camera
+    TextureReference: {fileID: 2800000, guid: 54fb2a067e5f4ea42ad14ee67f165664, type: 3}
   - TextureName: Copy
     TextureReference: {fileID: 2800000, guid: 919205385134b6c46b2f02da0a4d4bfa, type: 3}
   - TextureName: Cut
@@ -84,10 +89,16 @@ MonoBehaviour:
     TextureReference: {fileID: 2800000, guid: 42e549e978172bd42868e73e3baca953, type: 3}
   - TextureName: Prefab
     TextureReference: {fileID: 2800000, guid: 3be2c879b47217d4d9a8ce0873c2c277, type: 3}
+  - TextureName: Redo
+    TextureReference: {fileID: 2800000, guid: 458f0388fd6f2d849bbb7635204cfde6, type: 3}
+  - TextureName: Reset
+    TextureReference: {fileID: 2800000, guid: 34d4b422c9293c84aaa256b1056044e5, type: 3}
   - TextureName: SelectableStates
     TextureReference: {fileID: 2800000, guid: 92a92b9fade58bb479c3230dc0735367, type: 3}
   - TextureName: Selected
     TextureReference: {fileID: 2800000, guid: 0668be4f9ca439c41a5ba7db600a4c16, type: 3}
+  - TextureName: SpriteSheet
+    TextureReference: {fileID: 2800000, guid: b1b75f9944a0c9541b71b9bb8d3bac8c, type: 3}
   - TextureName: ToggleMixed
     TextureReference: {fileID: 2800000, guid: e30300593727db6419c5921ab49c58ef, type: 3}
   - TextureName: ToggleOFF
@@ -98,6 +109,8 @@ MonoBehaviour:
     TextureReference: {fileID: 2800000, guid: f0d22fad39bfab644aa2b92d0dd619cd, type: 3}
   - TextureName: UISelectable
     TextureReference: {fileID: 2800000, guid: 7c26ee9519d72cd4d875d729ad9e5df4, type: 3}
+  - TextureName: Undo
+    TextureReference: {fileID: 2800000, guid: 18018c12d72032c46a599ff261651a0d, type: 3}
   - TextureName: Unity
     TextureReference: {fileID: 2800000, guid: fdf36baf437e1d2419e4eae15d7d7949, type: 3}
   - TextureName: UnityEvent
@@ -106,3 +119,5 @@ MonoBehaviour:
     TextureReference: {fileID: 2800000, guid: 58a4776a16ec21f4c9ad12ef933de5dc, type: 3}
   - TextureName: VisibilityChanged
     TextureReference: {fileID: 2800000, guid: 5af681b4a0a8999489403e147d098c4c, type: 3}
+  - TextureName: Zoom
+    TextureReference: {fileID: 2800000, guid: ebd458d7e39268849a058e2d8c86699a, type: 3}

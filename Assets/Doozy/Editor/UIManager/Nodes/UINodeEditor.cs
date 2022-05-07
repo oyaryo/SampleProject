@@ -22,7 +22,7 @@ namespace Doozy.Editor.UIManager.Nodes
     [CustomEditor(typeof(UINode))]
     public class UINodeEditor : FlowNodeEditor
     {
-        public override IEnumerable<Texture2D> nodeIconTextures => EditorMicroAnimations.Nody.Icons.UINode;
+        public override IEnumerable<Texture2D> nodeIconTextures => EditorSpriteSheets.Nody.Icons.UINode;
 
         private FluidComponentHeader enterNodeHeader { get; set; }
         private FluidComponentHeader exitNodeHeader { get; set; }
@@ -64,12 +64,13 @@ namespace Doozy.Editor.UIManager.Nodes
             componentHeader
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(UINode)))
                 .AddManualButton("https://doozyentertainment.atlassian.net/wiki/spaces/DUI4/pages/1048215593/UI+Node?atlOrigin=eyJpIjoiNTJjN2ZjZjgwYjJkNDM0YTk1ZjViZDk5MTYwN2RhZmIiLCJwIjoiYyJ9")
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.UIManager.Nodes.UINode.html")
                 .AddYouTubeButton();
 
             enterNodeHeader =
                 GetHeader()
                     .SetComponentNameText("On Enter Node")
-                    .SetIcon(EditorMicroAnimations.Nody.Icons.EnterNode)
+                    .SetIcon(EditorSpriteSheets.Nody.Icons.EnterNode)
                     .SetAccentColor(EditorColors.Nody.Input);
 
             onEnterHideAllViewsSwitch =
@@ -81,7 +82,7 @@ namespace Doozy.Editor.UIManager.Nodes
             exitNodeHeader =
                 GetHeader()
                     .SetComponentNameText("On Exit Node")
-                    .SetIcon(EditorMicroAnimations.Nody.Icons.ExitNode)
+                    .SetIcon(EditorSpriteSheets.Nody.Icons.ExitNode)
                     .SetAccentColor(EditorColors.Nody.Output);
 
             onExitHideAllViewsSwitch =
@@ -177,7 +178,7 @@ namespace Doozy.Editor.UIManager.Nodes
             lv.UseSmallEmptyListPlaceholder(true);
             lv.HideFooter(true);
             lv.ShowItemIndex(false);
-            lv.emptyListPlaceholder.SetIcon(EditorMicroAnimations.EditorUI.Placeholders.EmptyListViewSmall);
+            lv.emptyListPlaceholder.SetIcon(EditorSpriteSheets.EditorUI.Placeholders.EmptyListViewSmall);
 
             //ADD ITEM BUTTON (plus button)
             lv.AddNewItemButtonCallback += () =>

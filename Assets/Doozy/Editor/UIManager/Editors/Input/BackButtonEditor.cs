@@ -22,8 +22,8 @@ namespace Doozy.Editor.UIManager.Editors.Input
         private static Color accentColor => EditorColors.UIManager.UIComponent;
         private static EditorSelectableColorInfo selectableAccentColor => EditorSelectableColors.UIManager.UIComponent;
 
-        private static IEnumerable<Texture2D> backIconTextures => EditorMicroAnimations.EditorUI.Icons.Back;
-        private static IEnumerable<Texture2D> disabledEnabledTextures => EditorMicroAnimations.EditorUI.Icons.DisabledEnabled;
+        private static IEnumerable<Texture2D> backIconTextures => EditorSpriteSheets.EditorUI.Icons.Back;
+        private static IEnumerable<Texture2D> disabledEnabledTextures => EditorSpriteSheets.EditorUI.Icons.DisabledEnabled;
 
         private VisualElement root { get; set; }
         private FluidComponentHeader componentHeader { get; set; }
@@ -53,8 +53,7 @@ namespace Doozy.Editor.UIManager.Editors.Input
         private void InitializeEditor()
         {
             FindProperties();
-
-            root = new VisualElement();
+            root = DesignUtils.GetEditorRoot();
 
             componentHeader = FluidComponentHeader.Get()
                 .SetAccentColor(accentColor)
@@ -62,6 +61,7 @@ namespace Doozy.Editor.UIManager.Editors.Input
                 .SetIcon(backIconTextures.ToList())
                 .SetElementSize(ElementSize.Large)
                 .AddManualButton("https://doozyentertainment.atlassian.net/wiki/spaces/DUI4/pages/1048477760/Back+Button?atlOrigin=eyJpIjoiMWZiNTE0ZDBkZjZhNDMwZjgzYTY1ZjgzMmQ4OTc5MDUiLCJwIjoiYyJ9")
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.UIManager.Input.BackButton.html")
                 .AddYouTubeButton();
 
             stateIndicator =

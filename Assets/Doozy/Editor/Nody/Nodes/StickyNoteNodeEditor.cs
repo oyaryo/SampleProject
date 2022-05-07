@@ -16,7 +16,7 @@ namespace Doozy.Editor.Nody.Nodes
     public class StickyNoteNodeEditor : FlowNodeEditor
     {
         public override Color nodeAccentColor => EditorColors.Nody.StickyNote;
-        public override IEnumerable<Texture2D> nodeIconTextures => EditorMicroAnimations.Nody.Icons.StickyNoteNode;
+        public override IEnumerable<Texture2D> nodeIconTextures => EditorSpriteSheets.Nody.Icons.StickyNoteNode;
         
         protected override void InitializeEditor()
         {
@@ -25,6 +25,7 @@ namespace Doozy.Editor.Nody.Nodes
             componentHeader
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(StickyNoteNode)))
                 .AddManualButton("https://doozyentertainment.atlassian.net/wiki/spaces/DUI4/pages/1048510532/Sticky+Note+Node?atlOrigin=eyJpIjoiZTQ5OTRhMDljYWMzNGIxZDk5MGIyMzAzZWJjMWJiN2IiLCJwIjoiYyJ9")
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.Nody.Nodes.StickyNoteNode.html")
                 .AddYouTubeButton();
         }
     }

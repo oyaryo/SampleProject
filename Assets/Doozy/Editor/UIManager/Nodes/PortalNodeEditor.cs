@@ -23,7 +23,7 @@ namespace Doozy.Editor.UIManager.Nodes
     [CustomEditor(typeof(PortalNode))]
     public class PortalNodeEditor : FlowNodeEditor
     {
-        public override IEnumerable<Texture2D> nodeIconTextures => EditorMicroAnimations.Nody.Icons.PortalNode;
+        public override IEnumerable<Texture2D> nodeIconTextures => EditorSpriteSheets.Nody.Icons.PortalNode;
 
         private Image icon { get; set; }
         private Texture2DReaction iconReaction { get; set; }
@@ -75,6 +75,7 @@ namespace Doozy.Editor.UIManager.Nodes
             componentHeader
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(PortalNode)))
                 .AddManualButton("https://doozyentertainment.atlassian.net/wiki/spaces/DUI4/pages/1048182826/Portal+Node?atlOrigin=eyJpIjoiNTJhMWI3NTBiNTBhNDg2M2I2Mzc2ZTQyOGIzZjY5MmMiLCJwIjoiYyJ9")
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.UIManager.Nodes.PortalNode.html")
                 .AddYouTubeButton();
 
             icon =
@@ -199,13 +200,13 @@ namespace Doozy.Editor.UIManager.Nodes
             switch (trigger)
             {
                 case PortalNode.TriggerCondition.Signal:
-                    return EditorMicroAnimations.Signals.Icons.SignalStream;
+                    return EditorSpriteSheets.Signals.Icons.SignalStream;
                 case PortalNode.TriggerCondition.UIButton:
-                    return EditorMicroAnimations.UIManager.Icons.Buttons;
+                    return EditorSpriteSheets.UIManager.Icons.UIButton;
                 case PortalNode.TriggerCondition.UIToggle:
-                    return EditorMicroAnimations.UIManager.Icons.UIToggleCheckbox;
+                    return EditorSpriteSheets.UIManager.Icons.UIToggle;
                 case PortalNode.TriggerCondition.UIView:
-                    return EditorMicroAnimations.UIManager.Icons.Views;
+                    return EditorSpriteSheets.UIManager.Icons.UIView;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
             }

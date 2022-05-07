@@ -19,7 +19,7 @@ namespace Doozy.Editor.Nody.Nodes
     [CustomEditor(typeof(DebugNode))]
     public class DebugNodeEditor : FlowNodeEditor
     {
-        public override IEnumerable<Texture2D> nodeIconTextures => EditorMicroAnimations.Nody.Icons.DebugNode;
+        public override IEnumerable<Texture2D> nodeIconTextures => EditorSpriteSheets.Nody.Icons.DebugNode;
 
         private FluidField messageField { get; set; }
         private TextField messageTextField { get; set; }
@@ -40,6 +40,7 @@ namespace Doozy.Editor.Nody.Nodes
             componentHeader
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(DebugNode)))
                 .AddManualButton("https://doozyentertainment.atlassian.net/wiki/spaces/DUI4/pages/1048248389/Debug+Node?atlOrigin=eyJpIjoiYTJiMzM2YmNhNTEyNDU3OGE0ZmMyZmNiMzkzODI0ZmYiLCJwIjoiYyJ9")
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.Nody.Nodes.DebugNode.html")
                 .AddYouTubeButton();
 
             messageTextField =

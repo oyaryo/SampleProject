@@ -23,21 +23,21 @@ namespace Doozy.Editor.UIManager.Drawers
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {}
 
-        private static IEnumerable<Texture2D> emptyPlaceholderTextures => EditorMicroAnimations.EditorUI.Placeholders.Empty;
+        private static IEnumerable<Texture2D> emptyPlaceholderTextures => EditorSpriteSheets.EditorUI.Placeholders.Empty;
         private static string drawerTitle => "Available Behaviours";
-        
+
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
             var uiBehaviours = property.GetTargetObjectOfProperty() as UIBehaviours;
             var drawer = new VisualElement();
 
             FluidButton addBehaviourButton = FluidButton.Get()
-                .SetIcon(EditorMicroAnimations.EditorUI.Icons.Plus)
-                .SetAccentColor(EditorSelectableColors.Default.Add)
+                .SetIcon(EditorSpriteSheets.EditorUI.Icons.Plus)
+                .SetAccentColor(DesignUtils.callbackSelectableColor)
                 .SetLabelText("Add Behaviour")
                 .SetButtonStyle(ButtonStyle.Contained)
                 .SetElementSize(ElementSize.Tiny);
-            
+
             var availableBehaviours = new List<UIBehaviour.Name>(Enum.GetValues(typeof(UIBehaviour.Name)).Cast<UIBehaviour.Name>());
             var availableBehavioursPopupField = new PopupField<UIBehaviour.Name>(availableBehaviours, UIBehaviour.Name.PointerClick);
 
@@ -45,7 +45,7 @@ namespace Doozy.Editor.UIManager.Drawers
             FluidPlaceholder placeholder = FluidPlaceholder.Get().SetIcon(emptyPlaceholderTextures).ResizeToHeight(35);
             FluidField placeholderField = FluidField.Get().AddFieldContent(placeholder);
             placeholderField.AddManipulator(new Clickable(() => placeholder?.Play()));
-            
+
             SerializedProperty signalSourceProperty = property.FindPropertyRelative("SignalSource");
             SerializedProperty behavioursProperty = property.FindPropertyRelative("Behaviours");
 
@@ -58,7 +58,7 @@ namespace Doozy.Editor.UIManager.Drawers
                 UpdateAddBehaviourButtonTooltip(behaviourName);
             });
             availableBehavioursPopupField.schedule.Execute(() => UpdateAddBehaviourButtonTooltip(availableBehavioursPopupField.value));
-            
+
             addBehaviourButton.SetEnabled(uiBehaviours != null && !uiBehaviours.HasBehaviour(availableBehavioursPopupField.value));
 
             availableBehavioursField
@@ -68,9 +68,7 @@ namespace Doozy.Editor.UIManager.Drawers
                 .AddInfoElement(addBehaviourButton);
 
             FluidAnimatedContainer behavioursContainer =
-                new FluidAnimatedContainer()
-                    .SetClearOnHide(false)
-                    .Show(false)
+                new FluidAnimatedContainer("Behaviours", false).Show(false)
                     .SetStyleMarginTop(DesignUtils.k_Spacing)
                     .SetStyleMarginBottom(DesignUtils.k_Spacing);
 
@@ -123,7 +121,7 @@ namespace Doozy.Editor.UIManager.Drawers
                 placeholderField.SetStyleDisplay(availableBehaviours.Count == 0 ? DisplayStyle.Flex : DisplayStyle.None);
                 placeholder.Toggle(availableBehaviours.Count == 0);
                 availableBehavioursField.SetStyleDisplay(availableBehaviours.Count == 0 ? DisplayStyle.None : DisplayStyle.Flex);
-                
+
                 if (availableBehaviours.Count > 0)
                     availableBehavioursPopupField.value = availableBehaviours.First();
                 addBehaviourButton.SetEnabled(!uiBehaviours.HasBehaviour(availableBehavioursPopupField.value));
@@ -139,7 +137,7 @@ namespace Doozy.Editor.UIManager.Drawers
                     Refresh();
                 });
 
-            
+
             void UpdateAddBehaviourButtonTooltip(UIBehaviour.Name behaviourName) =>
                 addBehaviourButton.SetTooltip($"Add the '{ObjectNames.NicifyVariableName(behaviourName.ToString())}' behaviour and remove it from the {drawerTitle} drawer");
 
@@ -157,7 +155,7 @@ namespace Doozy.Editor.UIManager.Drawers
                 availableBehavioursField?.Recycle();
                 addBehaviourButton?.Recycle();
                 behavioursContainer?.Dispose();
-                
+
             });
 
             drawer
@@ -170,7 +168,7 @@ namespace Doozy.Editor.UIManager.Drawers
 
         private static FluidButton GetMinusButton() =>
             FluidButton.Get()
-                .SetIcon(EditorMicroAnimations.EditorUI.Icons.Minus)
+                .SetIcon(EditorSpriteSheets.EditorUI.Icons.Minus)
                 .SetAccentColor(EditorSelectableColors.Default.Remove)
                 .SetElementSize(ElementSize.Small);
     }

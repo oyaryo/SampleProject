@@ -17,7 +17,7 @@ namespace Doozy.Editor.Nody.Nodes
     [CustomEditor(typeof(RandomNode))]
     public class RandomNodeEditor : FlowNodeEditor
     {
-        public override IEnumerable<Texture2D> nodeIconTextures => EditorMicroAnimations.Nody.Icons.RandomNode;
+        public override IEnumerable<Texture2D> nodeIconTextures => EditorSpriteSheets.Nody.Icons.RandomNode;
 
         protected override void InitializeEditor()
         {
@@ -26,6 +26,7 @@ namespace Doozy.Editor.Nody.Nodes
             componentHeader
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(RandomNode)))
                 .AddManualButton("https://doozyentertainment.atlassian.net/wiki/spaces/DUI4/pages/1046675536/Random+Node?atlOrigin=eyJpIjoiYjdjNjQyYmMzNmYwNDZiMmE1ZmNmZjc3ZjlkMmVmN2UiLCJwIjoiYyJ9")
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.Nody.Nodes.RandomNode.html")
                 .AddYouTubeButton();
 
             RefreshNodeEditor();

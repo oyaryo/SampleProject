@@ -8,17 +8,23 @@ using UnityEngine.Events;
 
 namespace Doozy.Runtime.Mody
 {
+    /// <summary>
+    /// Mody specialized event that can trigger a UnityEvent and a set of ModyActionRunners  
+    /// </summary>
     [Serializable]
     public class ModyEvent : ModyEventBase
     {
         /// <summary> UnityEvent invoked when this event is executed. Note that if this mody event is not enabled, this UnityEvent will not get invoked </summary>
-        public UnityEvent Event;
+        public UnityEvent Event = new UnityEvent();
 
         /// <summary>
         /// Returns TRUE if the Event (UnityEvent) has the persistent event listeners count greater than zero
         /// <para/> Persistent event listeners are the ones set in the Inspector
         /// </summary>
         public bool hasEvents => Event != null && Event.GetPersistentEventCount() > 0;
+        
+        /// <summary> Returns TRUE if this ModyEvent has runners or its Event (UnityEvent) has the non persistent event listeners count greater than zero </summary>
+        public override bool hasCallbacks => hasRunners | hasEvents;
 
         public ModyEvent() : this(k_DefaultEventName) {}
 
@@ -27,7 +33,6 @@ namespace Doozy.Runtime.Mody
         public override void Execute(Signal signal = null)
         {
             base.Execute(signal);
-            if (!Enabled) return;
             Event?.Invoke();
         }
     }

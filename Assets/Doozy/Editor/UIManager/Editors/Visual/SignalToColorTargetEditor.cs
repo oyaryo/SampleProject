@@ -22,8 +22,8 @@ namespace Doozy.Editor.UIManager.Editors.Visual
         private static Color accentColor => EditorColors.UIManager.ListenerComponent;
         private static EditorSelectableColorInfo selectableAccentColor => EditorSelectableColors.UIManager.VisualComponent;
 
-        private static IEnumerable<Texture2D> componentIconTextures => EditorMicroAnimations.UIManager.Icons.SignalToColorTarget;
-        private static IEnumerable<Texture2D> colorTargetIconTextures => EditorMicroAnimations.Reactor.Icons.ColorTarget;
+        private static IEnumerable<Texture2D> componentIconTextures => EditorSpriteSheets.UIManager.Icons.SignalToColorTarget;
+        private static IEnumerable<Texture2D> colorTargetIconTextures => EditorSpriteSheets.Reactor.Icons.ColorTarget;
         
         private VisualElement root { get; set; }
         private FluidComponentHeader componentHeader { get; set; }
@@ -64,7 +64,7 @@ namespace Doozy.Editor.UIManager.Editors.Visual
         {
             FindProperties();
 
-            root = new VisualElement();
+            root = DesignUtils.GetEditorRoot();
 
             componentHeader =
                 FluidComponentHeader.Get()
@@ -73,6 +73,7 @@ namespace Doozy.Editor.UIManager.Editors.Visual
                     .SetComponentNameText("Signal To Color Target")
                     .SetIcon(componentIconTextures.ToList())
                     .AddManualButton()
+                    .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.UIManager.Visual.SignalToColorTarget.html")
                     .AddYouTubeButton();
 
             streamIdPropertyField = DesignUtils.NewPropertyField(propertyStreamId);

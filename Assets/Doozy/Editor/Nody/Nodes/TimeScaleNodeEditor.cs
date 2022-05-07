@@ -20,7 +20,7 @@ namespace Doozy.Editor.Nody.Nodes
     [CustomEditor(typeof(TimeScaleNode))]
     public class TimeScaleNodeEditor : FlowNodeEditor
     {
-        public override IEnumerable<Texture2D> nodeIconTextures => EditorMicroAnimations.Nody.Icons.TimeScaleNode;
+        public override IEnumerable<Texture2D> nodeIconTextures => EditorSpriteSheets.Nody.Icons.TimeScaleNode;
 
         private FloatField targetValueFloatField { get; set; }
         private FluidToggleSwitch animateValueSwitch { get; set; }
@@ -67,6 +67,7 @@ namespace Doozy.Editor.Nody.Nodes
             componentHeader
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(TimeScaleNode)))
                 .AddManualButton("https://doozyentertainment.atlassian.net/wiki/spaces/DUI4/pages/1048117283/Time+Scale+Node?atlOrigin=eyJpIjoiMzE5NmQ5NjJjZmRkNGUwOTk3NTFmZmMyYjQzYWNkN2MiLCJwIjoiYyJ9")
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.Nody.Nodes.TimeScaleNode.html")
                 .AddYouTubeButton();
 
             targetValueFloatField = DesignUtils.NewFloatField(propertyTargetValue).SetStyleFlexGrow(1);

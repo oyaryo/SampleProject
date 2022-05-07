@@ -19,7 +19,7 @@ namespace Doozy.Editor.Reactor.Editors.Targets
     [CustomEditor(typeof(AudioMixerProgressTarget), true)]
     public class AudioMixerProgressTargetEditor : ProgressTargetEditor
     {
-        public override IEnumerable<Texture2D> targetIconTextures => EditorMicroAnimations.Reactor.Icons.AudioMixerProgressTarget;
+        public override IEnumerable<Texture2D> targetIconTextures => EditorSpriteSheets.Reactor.Icons.AudioMixerProgressTarget;
 
         private TextField exposedParameterNameTextField { get; set; }
         private FluidField exposedParameterNameFluidField { get; set; }
@@ -53,6 +53,7 @@ namespace Doozy.Editor.Reactor.Editors.Targets
             componentHeader
                 .SetComponentNameText(ObjectNames.NicifyVariableName(nameof(AudioMixer)))
                 .AddManualButton()
+                .AddApiButton("https://api.doozyui.com/api/Doozy.Runtime.Reactor.Targets.ProgressTargets.AudioMixerProgressTarget.html")
                 .AddYouTubeButton();
 
             targetObjectField

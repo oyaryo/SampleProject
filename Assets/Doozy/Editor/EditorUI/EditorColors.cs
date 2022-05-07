@@ -1,4 +1,4 @@
-// Copyright (c) 2015 - 2021 Doozy Entertainment. All Rights Reserved.
+// Copyright (c) 2015 - 2022 Doozy Entertainment. All Rights Reserved.
 // This code can only be used under the standard Unity Asset Store End User License Agreement
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
@@ -377,6 +377,28 @@ namespace Doozy.Editor.EditorUI
           
         }
 
+        public static class SceneManagement
+        {
+            private static EditorDataColorPalette s_colorPalette;
+            private static EditorDataColorPalette colorPalette =>
+                s_colorPalette != null
+                    ? s_colorPalette
+                    : s_colorPalette = EditorDataColorDatabase.GetColorPalette("SceneManagement");
+            
+            public static Color GetColor(ColorName colorName) =>
+                colorPalette.GetColor(colorName.ToString());
+                
+            public enum ColorName
+            {
+                Component
+            }
+            
+
+            private static Color? s_Component;
+            public static Color Component => (Color) (s_Component ?? (s_Component = GetColor(ColorName.Component)));
+          
+        }
+
         public static class Signals
         {
             private static EditorDataColorPalette s_colorPalette;
@@ -405,6 +427,28 @@ namespace Doozy.Editor.EditorUI
             public static Color Signal => (Color) (s_Signal ?? (s_Signal = GetColor(ColorName.Signal)));
             private static Color? s_Stream;
             public static Color Stream => (Color) (s_Stream ?? (s_Stream = GetColor(ColorName.Stream)));
+          
+        }
+
+        public static class UIDesigner
+        {
+            private static EditorDataColorPalette s_colorPalette;
+            private static EditorDataColorPalette colorPalette =>
+                s_colorPalette != null
+                    ? s_colorPalette
+                    : s_colorPalette = EditorDataColorDatabase.GetColorPalette("UIDesigner");
+            
+            public static Color GetColor(ColorName colorName) =>
+                colorPalette.GetColor(colorName.ToString());
+                
+            public enum ColorName
+            {
+                Color
+            }
+            
+
+            private static Color? s_Color;
+            public static Color Color => (Color) (s_Color ?? (s_Color = GetColor(ColorName.Color)));
           
         }
 

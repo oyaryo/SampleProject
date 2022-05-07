@@ -20,7 +20,9 @@ namespace Doozy.Editor.EditorUI.Components
 {
     public class FluidToggleButtonTab : FluidToggle<FluidToggleButtonTab>
     {
-       public override void Reset()
+        public const float k_IconReactionDuration = 0.6f;
+
+        public override void Reset()
         {
             base.Reset();
 
@@ -35,11 +37,11 @@ namespace Doozy.Editor.EditorUI.Components
             this.SetStyleMinWidth(StyleKeyword.Auto);
             this.SetStyleWidth(StyleKeyword.Auto);
             this.SetStyleMaxWidth(StyleKeyword.Auto);
-            
+
             this.SetStyleMinHeight(StyleKeyword.Auto);
             this.SetStyleHeight(StyleKeyword.Auto);
             this.SetStyleMaxHeight(StyleKeyword.Auto);
-            
+
             this.ResetLayout();
             this.ResetAccentColor();
             ClearIcon();
@@ -48,6 +50,8 @@ namespace Doozy.Editor.EditorUI.Components
             this.ClearOnClick();
             this.ClearOnValueChanged();
             this.SetTooltip(string.Empty);
+
+            this.buttonLabel.SetStyleTextAlign(TextAnchor.MiddleLeft);
             
             selectionState = SelectionState.Normal;
         }
@@ -233,7 +237,7 @@ namespace Doozy.Editor.EditorUI.Components
 
             selectionState = SelectionState.Normal;
 
-            iconReaction.SetDuration(0.6f);
+            iconReaction.SetDuration(k_IconReactionDuration);
         }
 
         public FluidToggleButtonTab AddToInfoContainer(VisualElement element)
@@ -248,10 +252,10 @@ namespace Doozy.Editor.EditorUI.Components
             infoContainer
                 .RecycleAndClear()
                 .SetStyleDisplay(DisplayStyle.None);
-            
+
             return this;
         }
-        
+
         /// <summary> Set label text </summary>
         /// <param name="labelText"> Label text </param>
         public FluidToggleButtonTab SetLabelText(string labelText)
@@ -311,13 +315,13 @@ namespace Doozy.Editor.EditorUI.Components
         }
 
         /// <summary> Set Static Icon </summary>
-        /// <param name="iconTexture2D"> Icon texture </param>
-        public FluidToggleButtonTab SetIcon(Texture2D iconTexture2D)
+        /// <param name="texture"> Icon texture </param>
+        public FluidToggleButtonTab SetIcon(Texture2D texture)
         {
             UpdateIconType(IconType.Static);
             IconReaction?.Recycle();
             IconReaction = null;
-            icon.SetStyleBackgroundImage(iconTexture2D);
+            icon.SetStyleBackgroundImage(texture);
             icon.SetStyleDisplay(DisplayStyle.Flex);
             SetAnimationTrigger(IconAnimationTrigger.None);
             switch (tabContent)
@@ -400,8 +404,8 @@ namespace Doozy.Editor.EditorUI.Components
                     throw new ArgumentOutOfRangeException();
             }
 
-            icon.SetStyleBackgroundImageTintColor(fluidElement.iconColor); //Icon
-            buttonLabel.SetStyleColor(fluidElement.textColor); //Label
+            icon.SetStyleBackgroundImageTintColor(fluidElement.iconColor);        //Icon
+            buttonLabel.SetStyleColor(fluidElement.textColor);                    //Label
             buttonContainer.SetStyleBackgroundColor(fluidElement.containerColor); //Background
             // layoutContainer.SetStyleBorderColor(fluidElement.containerBorderColor); //Border
         }
