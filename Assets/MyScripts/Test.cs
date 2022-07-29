@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
+    public GameObject quitPanel;
 
   void Update()
   {
@@ -21,9 +22,10 @@ public class Test : MonoBehaviour
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;//ゲームプレイ終了
 #else
+        quitPanel.SetActive(true);
         Application.Quit();//ゲームプレイ終了
 #endif
-      }
-    }
+            }
+        }
   }
 }

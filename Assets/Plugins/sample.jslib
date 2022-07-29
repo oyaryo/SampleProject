@@ -2,7 +2,11 @@ mergeInto(LibraryManager.library, {
 
   // 関数呼び出し
   Hello: function () {
-    window.alert("Hello, world!");
+    var returnStr = "bla";
+    var bufferSize = lengthBytesUTF8(returnStr) + 1;
+    var buffer = _malloc(bufferSize);
+    stringToUTF8(returnStr, buffer, bufferSize);
+    return buffer;
   },
 
   // 数値型の引数と戻り値
