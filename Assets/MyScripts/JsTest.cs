@@ -5,8 +5,8 @@ using UnityEngine.UI;
 public class JsTest : MonoBehaviour
 {
 
-  [DllImport("__Internal")]
-  private static extern string Hello();
+    //[DllImport("__Internal")]
+    //private static extern void Hello();
 
     //[DllImport("__Internal")]
     //private static extern void HelloString(string str);
@@ -23,14 +23,14 @@ public class JsTest : MonoBehaviour
     //[DllImport("__Internal")]
     //private static extern void BindWebGLTexture(int texture);
 
-    public Text label;
+    [DllImport("__Internal")]
+    private static extern string TestIndexedDB();
 
     // スタート時に呼ばれる
     void Start()
   {
         // 関数呼び出し
-        string text = Hello();
-        SetText(text);
+        //Hello();
 
         //// 数値型の引数と戻り値
         //int result = AddNumbers(5, 7);
@@ -43,8 +43,10 @@ public class JsTest : MonoBehaviour
         //// 文字列型の引数
         //HelloString("This is a string.");
 
-        //// 文字列の戻り値
-        //Debug.Log(StringReturnValueFunction());
+        // 文字列の戻り値
+        string text = TestIndexedDB();
+        Debug.Log(text);
+        SetText(text);
 
         // WebGLテクスチャのバインド
         //var texture = new Texture2D(0, 0, TextureFormat.ARGB32, false);
@@ -53,6 +55,8 @@ public class JsTest : MonoBehaviour
 
     public void SetText(string str)
     {
-        label.text = str;
+        Text text = GameObject.Find("TextFromIndexedDB").GetComponent<Text>();
+        text.text = str;
     }
+
 }

@@ -2,11 +2,7 @@ mergeInto(LibraryManager.library, {
 
   // 関数呼び出し
   Hello: function () {
-    var returnStr = "bla";
-    var bufferSize = lengthBytesUTF8(returnStr) + 1;
-    var buffer = _malloc(bufferSize);
-    stringToUTF8(returnStr, buffer, bufferSize);
-    return buffer;
+    window.alert("Hello");
   },
 
   // 数値型の引数と戻り値
@@ -27,7 +23,7 @@ mergeInto(LibraryManager.library, {
 
   // 文字列の戻り値
   StringReturnValueFunction: function () {
-    var returnStr = "bla";
+    var returnStr = "bla2";
     var bufferSize = lengthBytesUTF8(returnStr) + 1;
     var buffer = _malloc(bufferSize);
     stringToUTF8(returnStr, buffer, bufferSize);
@@ -37,5 +33,38 @@ mergeInto(LibraryManager.library, {
   // WebGLテクスチャのバインド
   BindWebGLTexture: function (texture) {
     GLctx.bindTexture(GLctx.TEXTURE_2D, GL.textures[texture]);
+  },
+
+  // indexedDBの戻り値テスト
+  TestIndexedDB: function () {
+    let openRequest = indexedDB.open("db", 1);
+
+    openRequest.onerror = function () {
+      console.error("Error: ", openRequest.error);
+    };
+
+    openRequest.onsuccess = function () {
+      let db = openRequest.result;
+      let transaction = db.transaction("tokens");
+      let tokens = transaction.objectStore("tokens");
+      let emailIndex = tokens.index("email_idx");
+
+      let request = emailIndex.getAll("test@example.com");
+
+      request.onsuccess = function () {
+        if (request.result !== undefined) {
+          //console.log("tokens: ", request.result[0].uToken);
+          var returnStr = request.result[0].uToken;
+          var bufferSize = lengthBytesUTF8(returnStr) + 1;
+          var buffer = _malloc(bufferSize);
+          stringToUTF8(returnStr, buffer, bufferSize);
+          console.log("TEST: ", returnStr);
+          return returnStr;
+        } else {
+          console.log("No such tokens");
+        }
+      };
+    };
+
   },
 });

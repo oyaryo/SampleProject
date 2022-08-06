@@ -18,7 +18,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Regist.unity
     guid: 8256e6a7da5844ce39ee75b7aa9ffaad
   - enabled: 0
-    path: Assets/Scenes/Test.unity
-    guid: 39018676ab9a94b5ea21d25f795431e7
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: Assets/Scenes/Firestore.unity
+    guid: 22983c7c44c50421aafc287df7fabf70
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7, type: 2}
