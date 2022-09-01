@@ -59,7 +59,8 @@ mergeInto(LibraryManager.library, {
           var buffer = _malloc(bufferSize);
           stringToUTF8(returnStr, buffer, bufferSize);
           console.log("TEST: ", returnStr);
-          return returnStr;
+          //return returnStr;
+          this.HelloString(returnStr);
         } else {
           console.log("No such tokens");
         }

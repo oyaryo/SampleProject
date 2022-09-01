@@ -23,8 +23,8 @@ public class JsTest : MonoBehaviour
     //[DllImport("__Internal")]
     //private static extern void BindWebGLTexture(int texture);
 
-    [DllImport("__Internal")]
-    private static extern string TestIndexedDB();
+    //[DllImport("__Internal")]
+    //private static extern string TestIndexedDB();
 
     // スタート時に呼ばれる
     void Start()
@@ -44,13 +44,18 @@ public class JsTest : MonoBehaviour
         //HelloString("This is a string.");
 
         // 文字列の戻り値
-        string text = TestIndexedDB();
-        Debug.Log(text);
-        SetText(text);
+        //string text = TestIndexedDB();
+        //Debug.Log(text);
+        //SetText(text);
 
         // WebGLテクスチャのバインド
         //var texture = new Texture2D(0, 0, TextureFormat.ARGB32, false);
         //BindWebGLTexture(texture.GetNativeTextureID());
+
+        //PlayerPrefs.SetString("testKey", "testValue");
+
+        //string text = PlayerPrefs.GetString("testKey", "No such data.");
+        //SetText(text);
     }
 
     public void SetText(string str)
